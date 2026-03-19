@@ -20,6 +20,7 @@ export default function RegistrationScreen() {
   const [password, setPassword] = useState("");
 
   const onLogin = () => {
+    router.push("/(tabs)/posts")
     console.debug("Credential", `${email} + ${password}`);
   };
 
@@ -53,7 +54,7 @@ export default function RegistrationScreen() {
             </Button>
             <TouchableOpacity
               style={styles.singIn}
-              onPress={() => router.push("/(auth)/login")}
+              onPress={() => router.push("/(auth)/registration")}
             >
               <Text style={styles.button}>Немає акаунту? Зареєструватися</Text>
             </TouchableOpacity>

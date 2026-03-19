@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import 'react-native-reanimated';
 import { useState } from 'react';
 import {useFonts} from 'expo-font';
-import { Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -21,10 +21,22 @@ if(!fontsLoaded){
     <Text> Loaded...</Text>
   )
 }
-  return (
-   <Stack>
-{!isAuth ? (<Stack.Screen name='auth'/>
-) : (<Stack.Screen name='tabs'/>) }
-   </Stack>
+   return (
+
+    <Stack >
+      {/* AUTH */}
+      <Stack.Screen
+        name="(auth)"
+        options={{ headerShown: false }}
+      />
+
+      {/* TABS */}
+      <Stack.Screen
+        name="(tabs)"
+        options={{ headerShown: false }}
+      />
+    </Stack>
+
   );
 }
+

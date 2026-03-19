@@ -1,11 +1,89 @@
+
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from "expo-router";
+import { Alert, Button, TouchableOpacity, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
+
+
 
 export default function TabsLayout() {
+
+ 
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
-      <Tabs.Screen name="posts" options={{ title: "Posts" }} />
-      <Tabs.Screen name="create" options={{ title: "Create" }} />
-      <Tabs.Screen name="profile" options={{ title: "Profile" }} />
+    <Tabs
+      screenOptions={{
+        headerTitleAlign: "center",
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: "#212121CC",
+        tabBarInactiveTintColor: "#212121CC",
+         sceneStyle: { backgroundColor: '#fff' },
+      }}
+    >
+      {/* POSTS */}
+      <Tabs.Screen
+        name="posts"
+       
+        options={{
+          title: "Публікації",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="grid-outline" size={size} color={color} />
+          ),
+        headerRight: () => (
+            <TouchableOpacity onPress={() => Alert.alert('Good Buy!')}>
+              <Feather
+                name="log-out"
+                size={24}
+                style={{ paddingRight: 10, color: "rgba(189, 189, 189, 1)" }}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      
+      />
+      
+
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: "Створити публікацію",
+          tabBarIcon: () => (
+            <View
+              style={{
+                width: 70,
+                height: 40,
+                backgroundColor: "#FF6C00",
+                borderRadius: 20,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop:9,
+                
+
+              }}
+            >
+              <Ionicons name="add" size={24} color="#fff" />
+            </View>
+          ),
+           headerLeft: () => (
+            <TouchableOpacity onPress={() => Alert.alert('Back!')}>
+              <Feather
+                name="arrow-left"
+                size={24}
+                style={{ paddingLeft: 16, color: "rgba(189, 189, 189, 1)" }}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
+
