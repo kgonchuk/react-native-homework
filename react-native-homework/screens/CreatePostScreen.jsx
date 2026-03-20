@@ -1,56 +1,111 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import CreatePosts from "../components/CreatePosts";
+import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 
 export default function CreatePostScreen() {
   const [name, setName]=useState("")
   const [place, setPlace]=useState("")
+  const [showCamera, setShowCamera] = useState(false);
+const [photo, setPhoto] = useState(null);
+const [location, setLocation] = useState(null);
+const [address, setAddress] = useState(null);
 
-    const onRegistr = () => {
-    console.debug("Credential", `${name} + ${place}`);
+useEffect(() => {
+  setShowCamera(true);
+}, []);
+
+const getLocation = async () => {
+  // запит дозволу
+  const { status } = await Location.requestForegroundPermissionsAsync();
+
+  if (status !== "granted") {
+    alert("Немає доступу до геолокації");
+    return;
+  }
+
+  // отримання координат
+  const loc = await Location.getCurrentPositionAsync({});
+  setLocation(loc.coords);
+
+  // 🌍 отримання адреси (reverse geocoding)
+  const addr = await Location.reverseGeocodeAsync(loc.coords);
+
+  if (addr.length > 0) {
+    const placeName = `${addr[0].city || ""}, ${addr[0].country || ""}`;
+    setAddress(placeName);
+    setPlace(placeName); // підставляємо в input
+  }
+};
+
+
+const handleTakePhoto = (uri) => {
+  setPhoto(uri);
+  setShowCamera(false);
+  getLocation(); 
+};
+
+const uploadPhoto = async () => {
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status === "granted") {
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+        if (!result.canceled) {
+          setPhoto(result.assets[0].uri);
+        }
+      }
+    } catch (error) {
+      console.log("error", error.message);
+    }
   };
+
   return (
     <View style={styles.container}>
 
       <View style={styles.photoContainer}>
-<View style={styles.photoBtnWrap}>
-  <TouchableOpacity onPress={()=>Alert.alert("Чііііз)))")}>
-    <Ionicons name="camera" size={24} color="#BDBDBD" />
-  </TouchableOpacity>
-</View>
-      </View>
-      <Pressable onPress={()=>Alert.alert("Loaded photo")}>
-      <Text style={styles.photoText}>Завантажте фото</Text>
-      </Pressable>
-      {/* <View style={styles.inputWrap}>
-      <TextInput 
-      placeholder="Назва..."
-      value={name}
-      onChangeText={setName}
-      style={styles.input}>
-      </TextInput>
+        {showCamera ? (
+    <CreatePosts onTakePhoto={handleTakePhoto} />
+  ) : (
+    <>
+      {photo && (
+        <Image
+          source={{ uri: photo }}
+          style={{ width: "100%", height: "100%", borderRadius: 8 }}
+        />
+      )}
 
-        <View style={{ position: 'relative' }}>
- <TextInput   
-      placeholder="Місцевість..."
-      value={place}
-      onChangeText={setPlace}
-      style={styles.inputPlace}>
-      </TextInput>
-       <Feather
-    name="map-pin"
-    size={20}
-    color="#BDBDBD"
-    style={{
-      position: 'absolute',
-      left: 0,
-      top: 18,
-    }}
-  />
-        </View>
+      {/* <View style={styles.photoBtnWrap}>
+        <TouchableOpacity onPress={() => setShowCamera(true)}>
+          <Ionicons name="camera" size={24} color="#BDBDBD" />
+        </TouchableOpacity>
       </View> */}
+    </>
+  )}
+
+      </View>
+
+      {photo && (
+  <TouchableOpacity onPress={() => setPhoto(null)}>
+    <Text style={{ color: "red", marginTop: 8 }}>
+      Видалити фото
+    </Text>
+  </TouchableOpacity>
+)}
+     
       <View style={styles.inputWrap}>
-  
+     {!photo && (
+            <TouchableOpacity onPress={uploadPhoto} style={styles.uploadPhoto}>
+              <Text style={styles.photoText}>Завантажте фото</Text>
+            </TouchableOpacity>
+          )}
   <TextInput 
     placeholder="Назва..."
     value={name}
@@ -60,8 +115,9 @@ export default function CreatePostScreen() {
 
   {/* Локація */}
   <View style={styles.locationWrap}>
+    <Pressable onPress={getLocation}>
     <Feather name="map-pin" size={20} color="#BDBDBD" />
-
+</Pressable>
     <TextInput   
       placeholder="Місцевість..."
       value={place}
@@ -111,11 +167,14 @@ photoBtnWrap:{
   width:60,
   height:60,
   borderRadius:30,
-  backgroundColor:"#fff",
+  backgroundColor:"#FFFFFF4D",
   position:"absolute",
   top:"40%",
   left:"40%",
   padding:20
+},
+uploadPhoto:{
+
 },
 photoText:{
   fontSize:16,

@@ -1,0 +1,88 @@
+import { Ionicons } from '@expo/vector-icons';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
+import { useEffect, useRef, useState } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+
+
+export default function CreatePosts({ onTakePhoto }) {
+  const [permission, requestPermission] = useCameraPermissions();
+   const [mediaPermission, requestMediaPermission] = MediaLibrary.usePermissions();
+  const cameraRef = useRef(null);
+  const [type, setType] = useState('back');
+
+    useEffect(() => {
+    requestMediaLibraryPermissionsAsync();
+  }, []);
+
+  if (!permission) return <View />;
+
+  if (!permission.granted) {
+    return (
+      <View style={styles.center}>
+        <Text>Потрібен доступ до камери</Text>
+        <TouchableOpacity onPress={requestPermission}>
+          <Text>Дозволити</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+   const takePhoto = async () => {
+    const photo = await cameraRef.current.takePictureAsync();
+
+    // збереження в галерею
+    if (mediaPermission?.granted) {
+      await MediaLibrary.createAssetAsync(photo.uri);
+    }
+    onTakePhoto(photo.uri);
+  };
+
+   const toggleCamera = () => {
+    setType((prev) => (prev === 'back' ? 'front' : 'back'));
+  };
+
+  return (
+     <CameraView style={styles.camera} ref={cameraRef} facing={type}>
+      
+      {/* Переключити камеру */}
+      <TouchableOpacity style={styles.flipBtn} onPress={toggleCamera}>
+        <Ionicons name="camera-reverse" size={28} color="#fff" />
+      </TouchableOpacity>
+
+      {/* Кнопка фото */}
+      <TouchableOpacity style={styles.captureBtn} onPress={takePhoto}>
+        <Ionicons name="camera" size={24} color="#fff" />
+      </TouchableOpacity>
+
+    </CameraView>
+  );
+}
+
+const styles = StyleSheet.create({
+  camera: {
+    flex: 1,
+  },
+  captureBtn: {
+     width:60,
+  height:60,
+  borderRadius:30,
+  backgroundColor:"#FFFFFF4D",
+  position:"absolute",
+  top:"40%",
+  left:"40%",
+  padding:20
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  flipBtn: {
+  position: "absolute",
+  top: 20,
+  right: 20,
+  zIndex: 10,
+},
+});
