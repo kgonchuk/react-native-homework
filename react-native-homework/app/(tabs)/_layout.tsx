@@ -1,14 +1,9 @@
-
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Tabs } from "expo-router";
-import { Alert, Button, TouchableOpacity, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-
-
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { router, Tabs } from "expo-router";
+import { TouchableOpacity, View } from "react-native";
 
 export default function TabsLayout() {
-
- 
   return (
     <Tabs
       screenOptions={{
@@ -16,20 +11,19 @@ export default function TabsLayout() {
         tabBarShowLabel: false,
         tabBarActiveTintColor: "#212121CC",
         tabBarInactiveTintColor: "#212121CC",
-         sceneStyle: { backgroundColor: '#fff' },
+        sceneStyle: { backgroundColor: "#fff" },
       }}
     >
       {/* POSTS */}
       <Tabs.Screen
         name="posts"
-       
         options={{
           title: "Публікації",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="grid-outline" size={size} color={color} />
           ),
-        headerRight: () => (
-            <TouchableOpacity onPress={() => Alert.alert('Good Buy!')}>
+          headerRight: () => (
+            <TouchableOpacity onPress={() => router.replace("/login")}>
               <Feather
                 name="log-out"
                 size={24}
@@ -38,9 +32,7 @@ export default function TabsLayout() {
             </TouchableOpacity>
           ),
         }}
-      
       />
-      
 
       <Tabs.Screen
         name="create"
@@ -55,16 +47,14 @@ export default function TabsLayout() {
                 borderRadius: 20,
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop:9,
-                
-
+                marginTop: 9,
               }}
             >
               <Ionicons name="add" size={24} color="#fff" />
             </View>
           ),
-           headerLeft: () => (
-            <TouchableOpacity onPress={() => Alert.alert('Back!')}>
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
               <Feather
                 name="arrow-left"
                 size={24}
@@ -81,10 +71,9 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" size={size} color={color} />
           ),
-          headerShown: false 
+          headerShown: false,
         }}
       />
     </Tabs>
   );
 }
-
