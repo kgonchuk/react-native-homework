@@ -1,7 +1,10 @@
+import { register } from "@/redux/auth/authOperation";
 import { Button } from "@react-navigation/elements";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -9,35 +12,77 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useDispatch } from "react-redux";
 import BgImage from "../assets/images/BG.png";
 import AddBtn from "../assets/images/add.png";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function RegistrationScreen() {
+  const dispatch = useDispatch();
   const router = useRouter();
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState(null);
 
   const onRegistr = () => {
-    console.debug("Credential", `${name} + ${email} + ${password}`);
+    if (!username || !email || !password) {
+      alert("Будь ласка, заповніть всі поля!");
+      return;
+    }
+    dispatch(register({ username, email, password, avatar }))
+      .unwrap()
+      .then(() => {
+        Alert.alert("Успіх", "Реєстрація пройшла успішно!");
+        router.push("/posts");
+      })
+      .catch((error) => {
+        console.log("Отримана помилка від сервера:", error);
+        Alert.alert(
+          "Помилка",
+          typeof error === "string" ? error : "Щось пішло не так",
+        );
+      });
   };
+
+  const uploadPhoto = async () => {
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status === "granted") {
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+        if (!result.canceled) {
+          setAvatar(result.assets[0].uri);
+        }
+      }
+    } catch (error) {
+      console.log("error", error.message);
+    }
+  };
+
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
         <Image source={BgImage} style={styles.img} />
         <View style={styles.userContainer}>
           <View style={styles.photoContainer}>
-            <Image style={styles.photoImg} />
-            <Image source={AddBtn} style={styles.addplus} />
+            <Image style={styles.photoImg} source={{ uri: avatar }} />
+            <TouchableOpacity onPress={uploadPhoto}>
+              <Image source={AddBtn} style={styles.addplus} />
+            </TouchableOpacity>
           </View>
           <Text style={styles.title}>Реєстрація</Text>
           <View style={styles.form}>
             <TextInput
               placeholder="Логін"
               style={styles.input}
-              value={name}
-              onChangeText={setName}
+              value={username}
+              onChangeText={setUsername}
             ></TextInput>
             <TextInput
               placeholder="Адреса електронної пошти"
@@ -94,7 +139,12 @@ const styles = StyleSheet.create({
     paddingTop: "92",
     paddingHorizontal: "16",
   },
-  photoImg: {},
+  photoImg: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
   photoContainer: {
     width: 120,
     height: 120,

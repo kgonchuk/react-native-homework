@@ -1,8 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import toast from "react-hot-toast";
-import { removeToken, saveToken } from "../../services/storage";
-import { get } from "mongoose";
+
+import { getToken, removeToken, saveToken } from "../../servises/storage";
 
 export const setAuthHeader = (token) => {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -14,23 +13,38 @@ export const clearAuthHeader = () => {
   return {};
 };
 
-axios.defaults.baseURL = "http://localhost:3000"; // Заміни на свій базовий URL сервера
-
+axios.defaults.baseURL = "http://192.168.0.108:3000";
 export const register = createAsyncThunk(
   "auth/register",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/api/auth/register", credentials);
+      const formData = new FormData();
+      formData.append("username", credentials.username);
+      formData.append("email", credentials.email);
+      formData.append("password", credentials.password);
 
-      const { accessToken, user } = response.data; // Узгоджено з бекендом
-      setAuthHeader(accessToken);
-    //   toast.success(`Welcome ${user.username}`);
+      if (credentials.avatar) {
+        const uri = credentials.avatar;
+        const filename = uri.split("/").pop();
 
-      // Додайте збереження в localStorage, щоб не втратити токен після перезавантаження
-      await saveToken(accessToken);
+        const match = /\.(\w+)$/.exec(filename);
+        const type = match ? `image/${match[1]}` : `image/jpeg`;
 
-      return response.data;
+        formData.append("avatar", {
+          uri,
+          name: filename,
+          type: type,
+        });
+      }
+      const { data } = await axios.post("/api/auth/register", formData, {
+        headers: {},
+      });
+
+      await saveToken(data.accessToken);
+      setAuthHeader(data.accessToken);
+      return data;
     } catch (error) {
+      console.log("Помилка реєстрації:", error.response?.data || error.message);
       return rejectWithValue(
         error.response?.data?.message || "Registration failed",
       );
@@ -47,7 +61,8 @@ export const login = createAsyncThunk(
       const { accessToken, user } = response.data;
 
       setAuthHeader(accessToken);
-    //   toast.success(`Welcome ${user.username}`);
+      await saveToken(accessToken);
+      //   toast.success(`Welcome ${user.username}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -63,7 +78,7 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
       clearAuthHeader();
       await removeToken("accessToken");
       await removeToken("refreshToken");
-      toast.error("Logout successful (No token to revoke)");
+
       return true;
     }
 
@@ -73,31 +88,52 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
       },
     });
     clearAuthHeader();
-    toast.success("We are waiting for you again!");
+
     return true;
   } catch (error) {
     const errorMessage =
       error.response?.data?.message || error.message || "Unknown error";
-    toast.error(errorMessage);
+
     return thunkAPI.rejectWithValue(errorMessage);
   }
 });
 
 export const refreshUser = createAsyncThunk(
-  "auth/refres",
+  "auth/refresh",
   async (_, { rejectWithValue }) => {
     const savedToken = await getToken();
     if (!savedToken) {
       return rejectWithValue("No token found");
     }
     try {
-        setAuthHeader(savedToken);
+      setAuthHeader(savedToken);
       const response = await axios.get("/api/auth/refresh");
-    return response.data;
+      return response.data;
     } catch (error) {
+      console.log("Помилка сервера:", error.response?.data || error.message);
       return rejectWithValue(
-        error.response?.data?.message || "Failed to refresh user"
+        error.response?.data?.message || "Failed to refresh user",
       );
     }
-  }
+  },
+);
+// оновлення аватара
+
+export const updateAvatar = createAsyncThunk(
+  "auth/updateAvatar",
+  async (fileUri, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("avatar", {
+        uri: fileUri,
+        name: "avatar.jpg",
+        type: "image/jpeg",
+      });
+
+      const { data } = await axios.patch("/api/auth/avatar", formData);
+      return data.avatar;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  },
 );

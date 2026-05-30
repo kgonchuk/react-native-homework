@@ -1,23 +1,66 @@
+import { updateAvatar } from "@/redux/auth/authOperation";
 import { Feather } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import BgImage from "../assets/images/BG.png";
 import DeleteBtn from "../assets/images/delete.png";
-import userPhoto from "../assets/images/user.png";
 
 export default function ProfileScreen() {
-  const handleLogOut = () => {
-    router.replace("/login");
-  };
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const [avatar, setAvatar] = useState(null);
+  const baseUrl = "http://192.168.0.108:3000/";
+  // Якщо локальний стан 'avatar' не null, показуємо його, інакше - фото з бекенду
+  const displayAvatar = avatar
+    ? avatar
+    : user.avatar
+      ? `${baseUrl}${user.avatar}`
+      : null;
 
+  const uploadPhoto = async () => {
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status === "granted") {
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+        if (!result.canceled) {
+          const uri = result.assets[0].uri;
+          setAvatar(uri);
+          dispatch(updateAvatar(uri));
+        }
+      }
+    } catch (error) {
+      console.log("error", error.message);
+    }
+  };
   return (
     <View style={styles.container}>
       <Image source={BgImage} style={styles.img} />
-
       <View style={styles.userContainer}>
         <View style={{ position: "relative" }}>
-          <Image source={userPhoto} alt="user" style={styles.userPhoto} />
-          <Image source={DeleteBtn} style={styles.deleteplus} />
+          <TouchableOpacity onPress={uploadPhoto}>
+            <Image
+              source={displayAvatar ? { uri: displayAvatar } : null} // Якщо немає аватара, просто не показуйте нічого
+              alt="user"
+              style={styles.userPhoto}
+            />
+            <Image source={DeleteBtn} style={styles.deleteplus} />
+          </TouchableOpacity>
           <Pressable
             onPress={() => router.push("/(auth)/login")}
             style={styles.logOutBtn}
@@ -29,7 +72,7 @@ export default function ProfileScreen() {
             />
           </Pressable>
         </View>
-        <Text style={styles.username}>Natali Romanova</Text>
+        <Text style={styles.username}>{user.username}</Text>
       </View>
     </View>
   );
@@ -65,6 +108,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -68,
     left: 158,
+    backgroundColor: "#F6F6F6",
   },
   deleteplus: {
     position: "absolute",

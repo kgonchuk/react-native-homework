@@ -113,12 +113,6 @@ export default function CreatePostScreen() {
                   style={{ width: "100%", height: "100%", borderRadius: 8 }}
                 />
               )}
-
-              {/* <View style={styles.photoBtnWrap}>
-        <TouchableOpacity onPress={() => setShowCamera(true)}>
-          <Ionicons name="camera" size={24} color="#BDBDBD" />
-        </TouchableOpacity>
-      </View> */}
             </>
           )}
         </View>

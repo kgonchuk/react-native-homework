@@ -1,3 +1,4 @@
+import { login } from "@/redux/auth/authOperation";
 import { Button } from "@react-navigation/elements";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -10,29 +11,36 @@ import {
   View,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useDispatch } from "react-redux";
 import BgImage from "../assets/images/BG.png";
-import AddBtn from "../assets/images/add.png";
 
 export default function RegistrationScreen() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const onLogin = () => {
-    router.push("/(tabs)/posts")
-    console.debug("Credential", `${email} + ${password}`);
+    if (!email || !password) {
+      alert("Будь ласка, заповніть всі поля!");
+      return;
+    }
+    dispatch(login({ email, password }))
+      .unwrap()
+      .then(() => {
+        router.push("/posts");
+      })
+      .catch((error) => {
+        console.log("Отримана помилка від сервера:", error);
+        alert(typeof error === "string" ? error : "Щось пішло не так");
+      });
   };
-
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
         <Image source={BgImage} style={styles.img} />
         <View style={styles.userContainer}>
-          <View style={styles.photoContainer}>
-            <Image style={styles.photoImg} />
-            <Image source={AddBtn} style={styles.addplus} />
-          </View>
           <Text style={styles.title}>Увійти</Text>
           <View style={styles.form}>
             <TextInput

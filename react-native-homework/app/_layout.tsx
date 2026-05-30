@@ -1,42 +1,45 @@
 
-import { Stack } from 'expo-router';
-import 'react-native-reanimated';
-import { useState } from 'react';
-import {useFonts} from 'expo-font';
-import { StyleSheet, Text, View } from 'react-native';
+import { Stack } from "expo-router";
+import { Provider, useSelector } from "react-redux";
+import { useFonts } from "expo-font";
+import { Text } from "react-native";
+import { persistor, RootState, store } from "../redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
 
 export default function RootLayout() {
-const [isAuth, setIsAuth]=useState(false)
-const [fontsLoaded] = useFonts({
-  "Robor-Regular":require("../assets/fonts/Roboto-Regular.ttf"),
-  "Robor-Bold":require("../assets/fonts/Roboto-Bold.ttf"),
-  "Robor-Medium":require("../assets/fonts/Roboto-Medium.ttf"),
-})
-if(!fontsLoaded){
-  return(
-    <Text> Loaded...</Text>
-  )
-}
-   return (
+  const [fontsLoaded] = useFonts({
+    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+    "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
+    "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
+  });
 
-    <Stack >
-      {/* AUTH */}
-      <Stack.Screen
-        name="(auth)"
-        options={{ headerShown: false }}
-      />
+  if (!fontsLoaded) {
+    return <Text>Loading...</Text>;
+  }
 
-      {/* TABS */}
-      <Stack.Screen
-        name="(tabs)"
-        options={{ headerShown: false }}
-      />
-    </Stack>
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
 
+        <RootLayoutContent />
+      </PersistGate>
+    </Provider>
   );
 }
 
+
+function RootLayoutContent() {
+
+  const isLoggedIn = useSelector((state: RootState) => state.auth?.isLoggedIn) ?? false;
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      {isLoggedIn ? (
+        <Stack.Screen name="(tabs)" />
+      ) : (
+        <Stack.Screen name="(auth)" />
+      )}
+    </Stack>
+  );
+}
