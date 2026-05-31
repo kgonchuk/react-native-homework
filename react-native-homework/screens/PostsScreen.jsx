@@ -20,6 +20,7 @@ export default function PostsScreen() {
           <Text style={styles.userEmail}>{user.email}</Text>
         </View>
       </View>
+
       <View style={styles.postsContainer}>
         <Image
           source={require("../assets/images/post1.png")}
@@ -27,13 +28,15 @@ export default function PostsScreen() {
           style={styles.postImage}
         />
         <Text style={styles.postTitle}>Ліс</Text>
-        <View style={styles.comment}>
-          <Feather name="message-circle" size={24} color="#FF6C00" />
-          <Text style={styles.commentCount}>0</Text>
-        </View>
-        <View style={styles.location}>
-          <Feather name="map-pin" size={24} color="#FF6C00" />
-          <Text style={styles.locationName}>Україна</Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={styles.comment}>
+            <Feather name="message-circle" size={24} color="#BDBDBD" />
+            <Text style={styles.commentCount}>0</Text>
+          </View>
+          <View style={styles.location}>
+            <Feather name="map-pin" size={24} color="#BDBDBD" />
+            <Text style={styles.locationName}>Україна</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -63,5 +66,39 @@ const styles = StyleSheet.create({
   userEmail: {
     fontSize: 11,
     fontWeight: 400,
+  },
+  postsContainer: {
+    marginTop: 32,
+  },
+  postImage: {
+    width: "100%",
+    height: 240,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  postTitle: {
+    fontSize: 16,
+    fontWeight: 500,
+    marginBottom: 8,
+  },
+  comment: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 8,
+  },
+  commentCount: {
+    fontSize: 16,
+    fontWeight: 400,
+    color: "#BDBDBD",
+  },
+  location: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  locationName: {
+    fontSize: 16,
+    fontWeight: 500,
   },
 });

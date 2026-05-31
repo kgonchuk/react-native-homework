@@ -1,7 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
-import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Alert,
@@ -15,18 +14,26 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux"; // <-- ЦЕ ОБОВ'ЯЗКОВО
 import CreatePosts from "../components/CreatePosts";
+import { createPost } from "../redux/posts/postOperation";
 
 export default function CreatePostScreen() {
+  const token = useSelector((state) => state.auth.accessToken);
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
-  const [place, setPlace] = useState("");
   const [showCamera, setShowCamera] = useState(false);
   const [photo, setPhoto] = useState(null);
+  const [title, setTitle] = useState("");
+
+  const [place, setPlace] = useState("");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
 
-  const isFormValid =
-    name.trim() !== "" && place.trim() !== "" && photo !== null;
+  // const isFormValid =
+  //   name.trim() !== "" && place.trim() !== "" && photo !== null;
 
   useEffect(() => {
     setShowCamera(true);
@@ -81,14 +88,26 @@ export default function CreatePostScreen() {
     }
   };
 
-  const handlePublish = () => {
-    if (!isFormValid) {
-      Alert.alert("Будь ласка, заповніть всі поля та додайте фото.");
+  const handlePublish = async () => {
+    if (!title.trim()) {
+      Alert.alert("Помилка", "Додайте назву!");
       return;
     }
-    // Логіка публікації поста
-    Alert.alert("Пост опубліковано!");
-    router.push("/posts");
+    if (!photo) {
+      Alert.alert("Помилка", "Додайте фото!");
+      return;
+    }
+
+    const postData = {
+      title,
+      place,
+      latitude: latitude || 0,
+      longitude: longitude || 0,
+      photo,
+      token,
+    };
+
+    dispatch(createPost(postData));
   };
 
   const handleClearForm = () => {
@@ -131,8 +150,8 @@ export default function CreatePostScreen() {
           )}
           <TextInput
             placeholder="Назва..."
-            value={name}
-            onChangeText={setName}
+            value={title}
+            onChangeText={(text) => setTitle(text)}
             style={styles.input}
           />
 
@@ -151,14 +170,13 @@ export default function CreatePostScreen() {
         </View>
         <Pressable
           onPress={handlePublish}
-          disabled={!isFormValid}
-          style={
-            isFormValid ? styles.loadButtonactive : styles.loadButtonDisabled
-          }
+          // disabled={!isFormValid}
+          // style={
+          //   isFormValid ? styles.loadButtonactive : styles.loadButtonDisabled
+          // }
+          style={styles.loadButtonactive}
         >
-          <Text style={isFormValid ? styles.btnText : styles.btnTextDisabled}>
-            Опубліковати
-          </Text>
+          <Text style={styles.btnText}>Опубліковати</Text>
         </Pressable>
 
         <Pressable style={styles.trashBtn} onPress={handleClearForm}>
