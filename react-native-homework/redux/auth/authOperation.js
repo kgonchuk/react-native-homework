@@ -13,7 +13,7 @@ export const clearAuthHeader = () => {
   return {};
 };
 
-axios.defaults.baseURL = "http://192.168.0.108:3000";
+axios.defaults.baseURL = "http://192.168.0.135:3000";
 export const register = createAsyncThunk(
   "auth/register",
   async (credentials, { rejectWithValue }) => {

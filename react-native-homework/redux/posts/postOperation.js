@@ -12,16 +12,17 @@ export const createPost = createAsyncThunk(
       });
 
       formData.append("title", postData.title);
-      formData.append("place", postData.place || ""); // Додайте пустий рядок, якщо place відсутній
-      formData.append("latitude", postData.latitude?.toString() || ""); // Додайте пустий рядок, якщо latitude відсутній
-      formData.append("longitude", postData.longitude?.toString() || ""); // Додайте пустий рядок, якщо longitude відсутній
+      formData.append("place", postData.place || "");
+      formData.append("latitude", postData.latitude?.toString() || ""); 
+      formData.append("longitude", postData.longitude?.toString() || ""); 
 
       console.log("ПЕРЕВІРКА ФОРМИ:", formData);
       console.log("FormData entries:", formData._parts);
       console.log("Відправляю на сервер:", {
         title: postData.title,
       });
-      const response = await fetch("http://192.168.0.108:3000/api/posts", {
+
+      const response = await fetch("http://192.168.0.135:3000/api/posts", {
         method: "POST",
         body: formData,
         headers: {
@@ -33,17 +34,64 @@ export const createPost = createAsyncThunk(
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to create post");
       }
-
-      //   return await response.json();
       const data = await response.json();
-      console.log("ВІДПОВІДЬ СЕРВЕРА:", data); // Подивіться, чи там є 'data' чи це сам пост
+      
+      console.log("ВІДПОВІДЬ СЕРВЕРА:", data); 
       return data;
     } catch (error) {
-      console.log(
-        "Помилка створення поста:",
-        error.response?.data || error.message,
-      );
-      throw error;
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+
+export const fetchPosts = createAsyncThunk(
+ "posts/fetchPosts",
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await fetch("http://192.168.0.135:3000/api/posts", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const responseText = await response.text(); 
+
+      if (!response.ok) {
+        throw new Error(`Server returned ${response.status}: ${responseText}`);
+      }
+
+      return JSON.parse(responseText);
+    } catch (error) {
+      console.log("Помилка:", error.message);
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const fetchAllPosts = createAsyncThunk(
+  "posts/fetchAllPosts",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch("http://192.168.0.135:3000/api/posts", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to fetch posts");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log("Помилка:", error.message);
+      return rejectWithValue(error.message);
     }
   },
 );

@@ -17,6 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux"; // <-- ЦЕ ОБОВ'ЯЗКОВО
 import CreatePosts from "../components/CreatePosts";
 import { createPost } from "../redux/posts/postOperation";
+import { router } from "expo-router";
 
 export default function CreatePostScreen() {
   const token = useSelector((state) => state.auth.accessToken);
@@ -108,6 +109,9 @@ export default function CreatePostScreen() {
     };
 
     dispatch(createPost(postData));
+      Alert.alert("Успіх", "Пост успішно створено!");
+      handleClearForm();
+      router.push("/posts");
   };
 
   const handleClearForm = () => {

@@ -4,6 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
+  FlatList,
   Image,
   Pressable,
   StyleSheet,
@@ -14,13 +15,16 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import BgImage from "../assets/images/BG.png";
 import DeleteBtn from "../assets/images/delete.png";
+import { selectPostsByAuthor } from "../redux/posts/postSelector";
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
+  const posts = useSelector((state) => state.posts.items);
   const user = useSelector((state) => state.auth.user);
   const [avatar, setAvatar] = useState(null);
-  const baseUrl = "http://192.168.0.108:3000/";
-  // Якщо локальний стан 'avatar' не null, показуємо його, інакше - фото з бекенду
+  const baseUrl = "http://192.168.0.135:3000/";
+
+
   const displayAvatar = avatar
     ? avatar
     : user.avatar
@@ -48,31 +52,64 @@ export default function ProfileScreen() {
       console.log("error", error.message);
     }
   };
+
+const myPosts = useSelector((state) => selectPostsByAuthor(state, user._id || user.id));
+
   return (
+
     <View style={styles.container}>
       <Image source={BgImage} style={styles.img} />
-      <View style={styles.userContainer}>
-        <View style={{ position: "relative" }}>
-          <TouchableOpacity onPress={uploadPhoto}>
-            <Image
-              source={displayAvatar ? { uri: displayAvatar } : null} // Якщо немає аватара, просто не показуйте нічого
-              alt="user"
-              style={styles.userPhoto}
-            />
-            <Image source={DeleteBtn} style={styles.deleteplus} />
-          </TouchableOpacity>
-          <Pressable
-            onPress={() => router.push("/(auth)/login")}
-            style={styles.logOutBtn}
-          >
-            <Feather
-              name="log-out"
-              size={24}
-              style={{ paddingRight: 10, color: "rgba(189, 189, 189, 1)" }}
-            />
-          </Pressable>
-        </View>
-        <Text style={styles.username}>{user.username}</Text>
+      <FlatList
+       data={myPosts}
+        keyExtractor={(item) => item._id}
+       contentContainerStyle={{ paddingTop: 60, paddingBottom: 50 }}
+        style={styles.list}
+        ListHeaderComponent={
+          <View style={styles.userContainer}>
+
+            <Pressable onPress={() => router.push("/(auth)/login")} style={styles.logOutBtn}>
+              <Feather name="log-out" size={24} color="#BDBDBD" />
+            </Pressable>
+
+            <Text style={styles.username}>{user.username}</Text>
+
+          </View>
+        }
+        renderItem={({ item }) => {
+          const imageUrl = item.image ? `http://192.168.0.135:3000${item.image.startsWith('/') ? item.image : '/' + item.image}` : null;
+          return (
+            
+            <View style={styles.postsContainer}>
+              
+                   <Image  source={{ uri: imageUrl }} style={styles.postImage} />
+                   <Text style={styles.postTitle}>{item.title}</Text>
+                   <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                     <View style={styles.comment}>
+                       <Feather name="message-circle" size={24} color="#BDBDBD" />
+                       <Text style={styles.commentCount}>0</Text>
+                     </View>
+                     <View style={styles.like}>
+                       <Feather name="thumbs-up" size={24} color="#BDBDBD" />
+                       <Text style={styles.likeCount}>0</Text>
+                     </View>
+                     <View style={styles.location}>
+                       <Feather name="map-pin" size={24} color="#BDBDBD" />
+                       <Text style={styles.locationName}>Україна</Text>
+                     </View>
+                   </View>
+                 </View>
+          );
+        }}
+      />
+      <View style={styles.avatarFixedWrapper}>
+        <TouchableOpacity onPress={uploadPhoto}>
+          {displayAvatar ? (
+            <Image source={{ uri: displayAvatar }} style={styles.userPhoto} />
+          ) : (
+            <View style={styles.userPhotoPlaceholder} />
+          )}
+          <Image source={DeleteBtn} style={styles.deleteplus} />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -81,50 +118,118 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    height: "100%",
+    backgroundColor: 'transparent',
   },
-  img: {
+ img: {
     position: "absolute",
-    flex: 1,
-    justifyContent: "center",
-    resizeMode: "cover",
     width: "100%",
     height: "100%",
   },
-  userContainer: {
+ list: {
     flex: 1,
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    width: "100%",
-    height: 549,
     marginTop: 149,
   },
-  userPhoto: {
+ userContainer: {
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    paddingTop: 32, 
+    alignItems: "center",
+    overflow: 'visible',
+  },
+  avatarFixedWrapper: {
+    position: "absolute",
+    top: 149 - 60, 
+    alignSelf: 'center', 
     width: 120,
     height: 120,
-    borderRadius: 16,
-    position: "absolute",
-    top: -68,
-    left: 158,
-    backgroundColor: "#F6F6F6",
+    zIndex: 999, 
+    elevation: 10, 
   },
-  deleteplus: {
-    position: "absolute",
-    right: 145,
-    top: 22,
+  userPhoto: { 
+    width: 120, 
+    height: 120, 
+    borderRadius: 16 
   },
-  logOutBtn: {
-    position: "absolute",
-    top: 22,
-    right: 16,
+  userPhotoPlaceholder: { 
+    width: 120, 
+    height: 120, 
+    borderRadius: 16, 
+    backgroundColor: "#F6F6F6" 
+  },
+  deleteplus: { 
+    position: "absolute", 
+    bottom: 10, 
+    right: -12 
+  },
+  logOutBtn: { 
+    position: "absolute", 
+    top: -35, 
+    right: 16 
   },
   username: {
     fontSize: 30,
     fontWeight: "500",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: 92,
+  },
+  userInfo: {
+    alignItems: "center",
+    gap: 8,
+  },
+  userEmail: {
+    fontSize: 16,
+    fontWeight: "400",
+    color: "#BDBDBD",
+  },
+   postsContainer: {
+    marginTop: 32,
+      paddingHorizontal: 16,
+      backgroundColor: "#FFFFFF",
+  },
+  postImage: {
+    width: "100%",
+    height: 240,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  postTitle: {
+    fontSize: 16,
+    fontWeight: 500,
+    marginBottom: 8,
+  },
+  comment: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 8,
+  },
+  commentCount: {
+    fontSize: 16,
+    fontWeight: 400,
+    color: "#BDBDBD",
+  },
+  like: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 8,
+  },
+  likeCount: {
+    fontSize: 16,
+    fontWeight: 400,
+    color: "#BDBDBD",
+  },  
+  location: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    
+  },
+  locationName: {
+    fontSize: 16,
+    fontWeight: 500,
+    textDecorationLine: "underline",
   },
 });

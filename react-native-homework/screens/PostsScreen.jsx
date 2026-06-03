@@ -1,44 +1,67 @@
+import { fetchPosts } from "@/redux/posts/postOperation";
 import { Feather } from "@expo/vector-icons";
-import { Image, StyleSheet, Text, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { PostItem } from "../components/PostItem";
+import { selectAllPosts } from "@/redux/posts/postSelector";
 
 export default function PostsScreen() {
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state.posts.items);
+  console.log("ПОСТІВ У STATE:", posts);
   const user = useSelector((state) => state.auth.user);
-  const baseUrl = "http://192.168.0.108:3000/";
+  const baseUrl = "http://192.168.0.135:3000/";
   const avatarUrl = user.avatar ? `${baseUrl}${user.avatar}` : null;
+  const token = useSelector((state) => state.auth.accessToken);
+  const allPosts = useSelector(selectAllPosts)
 
+
+  
+  useEffect(() => {
+    console.log("ТОКЕН ДЛЯ FETCH:", token); // Чи не порожній він?
+    dispatch(fetchPosts(token)).then((result) => {
+      console.log("ПОСТ З АВТОРОМ:", JSON.stringify(result.payload, null, 2));
+    });
+  }, [dispatch, token]);
+
+const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path; 
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${baseUrl}${cleanPath}`;
+  };
   return (
+
+
     <View style={styles.container}>
+      <FlatList
+  data={allPosts}
+  keyExtractor={(item) => item._id}
+  contentContainerStyle={{ paddingBottom: 20 }} 
+  
+  ListHeaderComponent={
+    <View style={styles.headerContainer}>
       <View style={styles.userContainer}>
-        <Image
-          source={{ uri: avatarUrl }}
-          alt="user"
-          style={styles.userPhoto}
-        />
+        <Image source={{ uri: avatarUrl }} style={styles.userPhoto} />
         <View>
           <Text style={styles.userName}>{user.username}</Text>
           <Text style={styles.userEmail}>{user.email}</Text>
         </View>
       </View>
+    </View>
+  }
 
-      <View style={styles.postsContainer}>
-        <Image
-          source={require("../assets/images/post1.png")}
-          alt="post"
-          style={styles.postImage}
-        />
-        <Text style={styles.postTitle}>Ліс</Text>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={styles.comment}>
-            <Feather name="message-circle" size={24} color="#BDBDBD" />
-            <Text style={styles.commentCount}>0</Text>
-          </View>
-          <View style={styles.location}>
-            <Feather name="map-pin" size={24} color="#BDBDBD" />
-            <Text style={styles.locationName}>Україна</Text>
-          </View>
-        </View>
-      </View>
+ renderItem={({ item }) => {
+    return (
+      <>
+
+        <PostItem post={item} />
+      </>
+    );
+  }}
+/>
+
     </View>
   );
 }
@@ -102,3 +125,4 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
 });
+
