@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchPosts, createPost, fetchAllPosts } from './postOperation';
+import { fetchPosts, createPost, fetchAllPosts, addComment, toggleLikeThunk } from './postOperation';
 
 const postSlice = createSlice({
     name: 'posts',
@@ -47,9 +47,33 @@ myPosts: [],
         .addCase(fetchAllPosts.rejected, (state, action) => {
             state.isLoading = false;
 
-        }); 
+        })
+        .addCase(addComment.pending, (state) => {
+            state.isLoading = true;
+            state.error = null;
+        })
+        .addCase(addComment.fulfilled, (state, action) => {
+           const post = state.items.find((p) => p._id ===action.payload.postId);
+    if (post) {
+      post.comments.push(action.payload);
+    }
+        })
+        .addCase(addComment.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+         })
+         .addCase(toggleLikeThunk.fulfilled, (state, action)=>{
+
+            const { postId } = action.meta.arg; 
+  const post = state.items.find((p) => p._id === postId);
+  if (post) {
+
+    post.likes = action.payload.likes; 
+  }
+         })
 
     }
+
 });
 
 export const postsReducer = postSlice.reducer;

@@ -19,7 +19,7 @@ export default function PostsScreen() {
 
   
   useEffect(() => {
-    console.log("ТОКЕН ДЛЯ FETCH:", token); // Чи не порожній він?
+    console.log("ТОКЕН ДЛЯ FETCH:", token); 
     dispatch(fetchPosts(token)).then((result) => {
       console.log("ПОСТ З АВТОРОМ:", JSON.stringify(result.payload, null, 2));
     });
@@ -71,6 +71,10 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     paddingLeft: 16,
     paddingRight: 16,
+
+  },
+  headerContainer: {
+    marginBottom: 32,
   },
   userContainer: {
     flexDirection: "row",

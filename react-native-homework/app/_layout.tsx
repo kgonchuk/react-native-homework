@@ -1,10 +1,11 @@
 
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { Provider, useSelector } from "react-redux";
 import { useFonts } from "expo-font";
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { persistor, RootState, store } from "../redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { Feather } from "@expo/vector-icons";
 
 
 export default function RootLayout() {
@@ -21,7 +22,6 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-
         <RootLayoutContent />
       </PersistGate>
     </Provider>
@@ -30,13 +30,28 @@ export default function RootLayout() {
 
 
 function RootLayoutContent() {
-
   const isLoggedIn = useSelector((state: RootState) => state.auth?.isLoggedIn) ?? false;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {isLoggedIn ? (
-        <Stack.Screen name="(tabs)" />
+        <>
+          <Stack.Screen name="(tabs)" />
+          {/* Назва має збігатися з назвою файлу в папці app */}
+          <Stack.Screen 
+            name="comments/[id]" 
+            options={{ 
+              headerShown: true, // ВАЖЛИВО: це примусово вмикає шапку
+              title: "Коментарі",
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: '#fff' },
+              headerTitleStyle: { fontSize: 17, fontWeight: "500" },
+              // headerBackTitleVisible: false,
+              headerTintColor: "#000", // Чорний колір тексту/кнопки назад
+              // headerTitleStyle: { color: "#000", fontSize: 17, fontWeight: "500" },
+            }} 
+          />
+        </>
       ) : (
         <Stack.Screen name="(auth)" />
       )}

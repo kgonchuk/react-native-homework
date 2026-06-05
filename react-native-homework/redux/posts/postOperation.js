@@ -95,3 +95,53 @@ export const fetchAllPosts = createAsyncThunk(
     }
   },
 );
+
+export const addComment = createAsyncThunk(
+  "posts/addComment",
+  async ({ postId, commentText, userId }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://192.168.0.135:3000/api/posts/${postId}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+       body: JSON.stringify({ 
+    text: commentText, 
+    author: userId 
+}),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add comment");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log("Помилка:", error.message);
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const toggleLikeThunk=createAsyncThunk(
+  "posts/toggleLike", async ({postId}, {rejectWithValue, getState})=>{
+    try{
+      const token= getState().auth.accessToken;
+      const response = await fetch(`http://192.168.0.135:3000/api/posts/${postId}/toggleLike`, {
+        method:"POST",
+      headers: {
+  "Authorization": `Bearer ${token}`, 
+  "Content-Type": "application/json",
+},
+        
+      })
+      if (!response.ok) throw new Error("Не вдалося змінити лайк");
+      return await response.json();
+    }catch(error)
+    {
+      return rejectWithValue(error.message)
+    }
+  }
+)
