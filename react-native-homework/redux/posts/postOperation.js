@@ -98,31 +98,33 @@ export const fetchAllPosts = createAsyncThunk(
 
 export const addComment = createAsyncThunk(
   "posts/addComment",
-  async ({ postId, commentText, userId }, { rejectWithValue }) => {
+  async ({ postId, commentText, userId }, { getState, rejectWithValue }) => {
     try {
+    const token = getState().auth.accessToken; 
+      
+      console.log("TOKEN BEING SENT:", token);
+console.log("TOKEN BEING SENT:", token);
       const response = await fetch(`http://192.168.0.135:3000/api/posts/${postId}/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
-       body: JSON.stringify({ 
-    text: commentText, 
-    author: userId 
-}),
+      body: JSON.stringify({ text: commentText }),
       });
+
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to add comment");
+        console.log("ПОМИЛКА ВІД СЕРВЕРА:", errorData); 
+        throw new Error(errorData.message || "Не вдалося додати коментар");
       }
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.log("Помилка:", error.message);
-      return rejectWithValue(error.message);
+      return await response.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
-  },
+  }
 );
 
 export const toggleLikeThunk=createAsyncThunk(

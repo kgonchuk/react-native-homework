@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {SendIcon} from "../SendIcon"
 
 export default function ComponentInput({  onSend }) {
     const [comment, setComment] = useState("");
@@ -8,14 +9,15 @@ export default function ComponentInput({  onSend }) {
       <View style={styles.inputWrapper}>
         <TextInput
           style={styles.input}
-          placeholder="Напишіть коментар..."
+          placeholder="Коментувати..."
           value={comment}
           onChangeText={setComment}
         />
       </View>
       <TouchableOpacity style={styles.sendButton} onPress={() => { onSend(comment); setComment(""); }}>
-        <Text>Відправити</Text>
+  <SendIcon size={34} color={"#BDBDBD"}/>
       </TouchableOpacity>
+    
     </View>
   );
 }       
@@ -23,16 +25,23 @@ export default function ComponentInput({  onSend }) {
 const styles = StyleSheet.create({
   commentContainer: {
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+ flexDirection: "row",
+    justifyContent: "space-between",
+        alignItems: "center",
+      borderWidth:1,
+    borderColor:"#E8E8E8",
+    backgroundColor:"#F6F6F6",
+    borderRadius:100
   },
   inputWrapper: {
     marginTop: 5,
+
   },
   input: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    padding: 5,
+    color:"#BDBDBD",
+    fontSize:16,
+    fontWeight:500,
+    padding:16
   },
   commentText: {
     fontSize: 14,

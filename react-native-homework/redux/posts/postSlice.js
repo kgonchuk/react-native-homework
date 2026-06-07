@@ -52,12 +52,16 @@ myPosts: [],
             state.isLoading = true;
             state.error = null;
         })
-        .addCase(addComment.fulfilled, (state, action) => {
-           const post = state.items.find((p) => p._id ===action.payload.postId);
+    .addCase(addComment.fulfilled, (state, action) => {
+    const newComment = action.payload;
+    const postId = newComment.postId;
+
+    const post = state.items.find((p) => p._id === postId);
+    
     if (post) {
-      post.comments.push(action.payload);
+        post.comments.push(newComment);
     }
-        })
+})
         .addCase(addComment.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.payload;

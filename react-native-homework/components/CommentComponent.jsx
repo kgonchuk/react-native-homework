@@ -1,4 +1,6 @@
 import {StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SendIcon } from "./Comments/SendIcon";
+
 
 export default function CommentComponent({ comment }) {
   return (
@@ -13,6 +15,9 @@ export default function CommentComponent({ comment }) {
       <TouchableOpacity style={styles.sendButton} onPress={() => console.log("Відправлено:", comment.text)}>
         <Text>Відправити</Text>
       </TouchableOpacity>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+<SendIcon size={30} color={"#BDBDBD"}/>
+    </View>
     </View>
   );
 }

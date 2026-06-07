@@ -17,10 +17,6 @@ const handleLike = () => {
   const imageUrl = post.image
     ? `${baseUrl.replace(/\/$/, "")}/${post.image.replace(/^\//, "")}`
     : null;
-
-  console.log("ПОТОЧНИЙ ЮЗЕР:", userId);
-console.log("МАСИВ ЛАЙКІВ:", likes);
-console.log("ВКЛЮЧАЄ ЛАЙК?:", likes.includes(userId));  
     
   return (
     
