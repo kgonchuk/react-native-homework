@@ -1,12 +1,11 @@
+import { createSelector } from "@reduxjs/toolkit";
 
 export const selectAllPosts = (state) => state.posts.items;
+const selectAuthorId = (state, authorId) => authorId;
 
-
-export const selectPostsByAuthor = (state, userId) => {
-  if (!userId) return [];
-  return state.posts.items.filter((post) => {
-
-    const authorIdFromPost = post.author?._id || post.author; 
-    return String(authorIdFromPost) === String(userId);
-  });
-};
+export const selectPostsByAuthor = createSelector(
+  [selectAllPosts, selectAuthorId],
+  (posts, authorId) => {
+    return posts.filter(post => post.author._id === authorId);
+  }
+);
