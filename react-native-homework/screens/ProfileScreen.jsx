@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import BgImage from "../assets/images/BG.png";
 import DeleteBtn from "../assets/images/delete.png";
 import { selectPostsByAuthor } from "../redux/posts/postSelector";
+import { PostItem } from "@/components/PostItem";
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
@@ -55,6 +56,8 @@ export default function ProfileScreen() {
 
 const myPosts = useSelector((state) => selectPostsByAuthor(state, user._id || user.id));
 
+
+
   return (
 
     <View style={styles.container}>
@@ -62,46 +65,12 @@ const myPosts = useSelector((state) => selectPostsByAuthor(state, user._id || us
       <FlatList
        data={myPosts}
         keyExtractor={(item) => item._id}
-       contentContainerStyle={{ paddingTop: 60, paddingBottom: 50 }}
-        style={styles.list}
+      style={styles.list} 
+  contentContainerStyle={styles.listContent}
         ListHeaderComponent={
-          <View style={styles.userContainer}>
-
-            <Pressable onPress={() => router.push("/(auth)/login")} style={styles.logOutBtn}>
-              <Feather name="log-out" size={24} color="#BDBDBD" />
-            </Pressable>
-
-            <Text style={styles.username}>{user.username}</Text>
-
-          </View>
-        }
-        renderItem={({ item }) => {
-          const imageUrl = item.image ? `http://192.168.0.135:3000${item.image.startsWith('/') ? item.image : '/' + item.image}` : null;
-          return (
-            
-            <View style={styles.postsContainer}>
-              
-                   <Image  source={{ uri: imageUrl }} style={styles.postImage} />
-                   <Text style={styles.postTitle}>{item.title}</Text>
-                   <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                     <View style={styles.comment}>
-                       <Feather name="message-circle" size={24} color="#BDBDBD" />
-                       <Text style={styles.commentCount}>0</Text>
-                     </View>
-                     <View style={styles.like}>
-                       <Feather name="thumbs-up" size={24} color="#BDBDBD" />
-                       <Text style={styles.likeCount}>0</Text>
-                     </View>
-                     <View style={styles.location}>
-                       <Feather name="map-pin" size={24} color="#BDBDBD" />
-                       <Text style={styles.locationName}>Україна</Text>
-                     </View>
-                   </View>
-                 </View>
-          );
-        }}
-      />
-      <View style={styles.avatarFixedWrapper}>
+          <View style={styles.headerContainer}>
+            <View style={styles.headerBackground}>
+      <View style={styles.avatarWrapper}>
         <TouchableOpacity onPress={uploadPhoto}>
           {displayAvatar ? (
             <Image source={{ uri: displayAvatar }} style={styles.userPhoto} />
@@ -111,6 +80,45 @@ const myPosts = useSelector((state) => selectPostsByAuthor(state, user._id || us
           <Image source={DeleteBtn} style={styles.deleteplus} />
         </TouchableOpacity>
       </View>
+
+      <Pressable onPress={() => router.push("/(auth)/login")} style={styles.logOutBtn}>
+        <Feather name="log-out" size={24} color="#BDBDBD" />
+      </Pressable>
+
+      <Text style={styles.username}>{user.username}</Text>
+      </View>
+    </View>
+        }
+        renderItem={({ item }) => {
+          const imageUrl = item.image ? `http://192.168.0.135:3000${item.image.startsWith('/') ? item.image : '/' + item.image}` : null;
+          return (
+
+            <View style={styles.postContainer}>
+             <PostItem post={item} />
+
+             </View>
+            // <View style={styles.postsContainer}>
+              
+            //        <Image  source={{ uri: imageUrl }} style={styles.postImage} />
+            //        <Text style={styles.postTitle}>{item.title}</Text>
+            //        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            //          <View style={styles.comment}>
+            //            <Feather name="message-circle" size={24} color="#BDBDBD" />
+            //            <Text style={styles.commentCount}>0</Text>
+            //          </View>
+            //          <View style={styles.like}>
+            //            <Feather name="thumbs-up" size={24} color="#BDBDBD" />
+            //            <Text style={styles.likeCount}>0</Text>
+            //          </View>
+            //          <View style={styles.location}>
+            //            <Feather name="map-pin" size={24} color="#BDBDBD" />
+            //            <Text style={styles.locationName}>Україна</Text>
+            //          </View>
+            //        </View>
+            //      </View>
+          );
+        }}
+      />
     </View>
   );
 }
@@ -119,18 +127,45 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
+    
   },
  img: {
     position: "absolute",
     width: "100%",
     height: "100%",
   },
- list: {
-    flex: 1,
+list: {
+flex: 1,
+    overflow: "visible",
+  },
+  listContent: {
+    backgroundColor: "#FFFFFF", 
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    marginTop: 150, 
+    minHeight: '100%', 
+     paddingTop: 32,
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  headerContainer: {
+    overflow: "visible",
+  },
+  headerBackground: {
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    marginTop: 149,
+    alignItems: "center",
+    paddingBottom: 20,
+    
+  },
+  avatarWrapper: {
+   width: 120,
+    height: 120,
+    borderRadius: 16,
+    backgroundColor: "#F6F6F6",
+    marginTop: -60, 
+    zIndex: 10,
   },
  userContainer: {
     backgroundColor: "#FFFFFF",
@@ -141,7 +176,7 @@ const styles = StyleSheet.create({
     overflow: 'visible',
   },
   avatarFixedWrapper: {
-    position: "absolute",
+
     top: 149 - 60, 
     alignSelf: 'center', 
     width: 120,
@@ -149,30 +184,35 @@ const styles = StyleSheet.create({
     zIndex: 999, 
     elevation: 10, 
   },
-  userPhoto: { 
-    width: 120, 
-    height: 120, 
-    borderRadius: 16 
-  },
+ userPhoto: {
+width: 120, 
+height: 120, 
+borderRadius: 16 
+},
   userPhotoPlaceholder: { 
-    width: 120, 
-    height: 120, 
-    borderRadius: 16, 
-    backgroundColor: "#F6F6F6" 
-  },
-  deleteplus: { 
-    position: "absolute", 
-    bottom: 10, 
-    right: -12 
-  },
+  width: 120, 
+  height: 120, 
+  borderRadius: 16, 
+  backgroundColor: "#F6F6F6" 
+},
+ deleteplus: {  
+  marginTop: -40,
+  alignSelf: 'flex-end',
+  marginRight: -5,
+  bottom: 10, 
+  right: -12 
+},
   logOutBtn: { 
-    position: "absolute", 
-    top: -35, 
-    right: 16 
-  },
+   marginTop: -40,
+  alignSelf: 'flex-end',
+    marginRight: 20,
+  top: 16, 
+  right: 16 
+},
   username: {
     fontSize: 30,
     fontWeight: "500",
+    marginTop: 20, 
   },
   userInfo: {
     alignItems: "center",
@@ -232,4 +272,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     textDecorationLine: "underline",
   },
+  postContainer:{
+
+  }
 });

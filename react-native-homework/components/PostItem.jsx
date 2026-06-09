@@ -29,15 +29,15 @@ const handleLike = () => {
       </Text>
       <View style={styles.infowrapper}>
         <Text style={styles.postTitle}>{post.title}</Text>
-        <View style={styles.comment}>
-            <TouchableOpacity   onPress={() => router.push(`/comments/${post._id}`)}>
+        <View >
+            <TouchableOpacity   onPress={() => router.push(`/comments/${post._id}`)} style={styles.comment} >
               <Feather name="message-circle" size={24} color="#BDBDBD" />
               <Text style={styles.commentCount}>{post.comments ? post.comments.length : 0}</Text>
             </TouchableOpacity>
         </View>
 
-        <View style={styles.like}>
-            <TouchableOpacity onPress={handleLike}>
+        <View >
+            <TouchableOpacity onPress={handleLike} style={styles.like} >
               <Feather name="thumbs-up" size={24} color={likes?.includes(userId) ? "#FF6C00" : "#BDBDBD"} />
               <Text style={styles.likeCount}>{likes.length}</Text>
             </TouchableOpacity>
@@ -45,7 +45,9 @@ const handleLike = () => {
                      
             <View style={styles.locationWrapper}>
             <Feather name="map-pin" size={24} color="#BDBDBD" />
-            <Text style={styles.locationName}>Україна</Text>
+           <Text style={styles.locationName}>
+  {post.location?.name || "Невідома локація"}
+</Text>
             </View>
 
                    </View>

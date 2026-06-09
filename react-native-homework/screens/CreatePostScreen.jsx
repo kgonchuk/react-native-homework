@@ -174,10 +174,6 @@ export default function CreatePostScreen() {
         </View>
         <Pressable
           onPress={handlePublish}
-          // disabled={!isFormValid}
-          // style={
-          //   isFormValid ? styles.loadButtonactive : styles.loadButtonDisabled
-          // }
           style={styles.loadButtonactive}
         >
           <Text style={styles.btnText}>Опубліковати</Text>

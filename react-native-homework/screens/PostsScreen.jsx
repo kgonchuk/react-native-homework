@@ -8,8 +8,6 @@ import { selectAllPosts } from "@/redux/posts/postSelector";
 
 export default function PostsScreen() {
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts.items);
-  console.log("ПОСТІВ У STATE:", posts);
   const user = useSelector((state) => state.auth.user);
   const baseUrl = "http://192.168.0.135:3000/";
   const avatarUrl = user.avatar ? `${baseUrl}${user.avatar}` : null;
@@ -19,18 +17,10 @@ export default function PostsScreen() {
 
   
   useEffect(() => {
-    console.log("ТОКЕН ДЛЯ FETCH:", token); 
     dispatch(fetchPosts(token)).then((result) => {
-      console.log("ПОСТ З АВТОРОМ:", JSON.stringify(result.payload, null, 2));
     });
   }, [dispatch, token]);
 
-const getImageUrl = (path) => {
-    if (!path) return null;
-    if (path.startsWith('http')) return path; 
-    const cleanPath = path.startsWith('/') ? path : `/${path}`;
-    return `${baseUrl}${cleanPath}`;
-  };
   return (
 
 

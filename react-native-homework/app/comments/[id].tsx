@@ -76,9 +76,6 @@ data={post?.comments ? post.comments.filter(c => c !== undefined && c !== null) 
   ? (item.author.avatar.startsWith('http') ? item.author.avatar : `${baseUrl}${item.author.avatar}`) 
   : null;
   if (!item || !item.author) return null;
-  console.log("COMMENT TO RENDER:", item)
-  console.log("AVATAR FIELD:", item.author?.avatar);
-  console.log("ITEM AUTHOR:", item.author)
     return (
       <View style={[styles.flatContainer, isMyComment && styles.myComment]}>
 {avatarUri ? (
