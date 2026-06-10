@@ -14,7 +14,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux"; // <-- ЦЕ ОБОВ'ЯЗКОВО
+import { useDispatch, useSelector } from "react-redux"; 
 import CreatePosts from "../components/CreatePosts";
 import { createPost } from "../redux/posts/postOperation";
 import { router, useFocusEffect } from "expo-router";
@@ -26,76 +26,13 @@ export default function CreatePostScreen() {
   const [showCamera, setShowCamera] = useState(false);
   const [photo, setPhoto] = useState(null);
   const [title, setTitle] = useState("");
-
   const [place, setPlace] = useState("");
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
 
   useEffect(() => {
     setShowCamera(true);
   }, []);
-
-  // const getLocation = async () => {
-  //   const { status } = await Location.requestForegroundPermissionsAsync();
-  //   if (status !== "granted") {
-  //     alert("Немає доступу до геолокації");
-  //     return;
-  //   }
-  //   const loc = await Location.getCurrentPositionAsync({});
-
-  //   if (location && location.coords) {
-  //     return {
-  //       latitude: location.coords.latitude,
-  //       longitude: location.coords.longitude,
-  //     };
-  //   }
-  //   setLocation(loc.coords);
-  //   const addr = await Location.reverseGeocodeAsync(loc.coords);
-  //   if (addr.length > 0) {
-  //     const placeName = `${addr[0].city || ""}, ${addr[0].country || ""}`;
-  //     setAddress(placeName);
-  //     setPlace(placeName); 
-  //   }
-  //    return {
-  //   latitude: location.coords.latitude,
-  //   longitude: location.coords.longitude,
-  // };
-  // };
-   
-// const getLocation = async (placeName) => {
-//   try {
-//     // 1. Якщо користувач ввів назву міста
-//     if (placeName && placeName.trim() !== "") {
-//       const geoResult = await Location.geocodeAsync(placeName);
-      
-//       if (geoResult.length > 0) {
-//         return {
-//           latitude: geoResult[0].latitude,
-//           longitude: geoResult[0].longitude,
-//         };
-//       } else {
-//         // Якщо місто не знайдено, можна видати алерт або повернути 0,0
-//         console.log("Місто не знайдено, використовуємо GPS");
-//       }
-//     }
-
-//     // 2. Якщо користувач нічого не ввів або місто не знайшлось -> GPS
-//     let { status } = await Location.requestForegroundPermissionsAsync();
-//     if (status !== "granted") return { latitude: 0, longitude: 0 };
-
-//     const location = await Location.getCurrentPositionAsync({});
-//     return {
-//       latitude: location.coords.latitude,
-//       longitude: location.coords.longitude,
-//     };
-//   } catch (error) {
-//     console.error("Помилка отримання локації:", error);
-//     return { latitude: 0, longitude: 0 };
-//   }
-// };
-
 
 const getLocation = async (placeName) => {
   try {
@@ -116,11 +53,11 @@ const getLocation = async (placeName) => {
 
     const location = await Location.getCurrentPositionAsync({});
     
-    // ДОДАЄМО: Зворотне геокодування, щоб отримати назву міста
+    // Зворотне геокодування, щоб отримати назву міста
     const addr = await Location.reverseGeocodeAsync(location.coords);
     if (addr.length > 0) {
       const newPlaceName = `${addr[0].city || ""}, ${addr[0].country || ""}`;
-      setPlace(newPlaceName); // Оновлюємо стан інпуту
+      setPlace(newPlaceName);
     }
 
     return {
@@ -128,7 +65,6 @@ const getLocation = async (placeName) => {
       longitude: location.coords.longitude,
     };
   } catch (error) {
-    console.error("Помилка:", error);
     return { latitude: 0, longitude: 0 };
   }
 };
@@ -144,13 +80,14 @@ const getLocation = async (placeName) => {
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status === "granted") {
         const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
+         mediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
           aspect: [4, 3],
           quality: 1,
         });
         if (!result.canceled) {
           setPhoto(result.assets[0].uri);
+          setShowCamera(false);
         }
       }
     } catch (error) {
@@ -207,22 +144,22 @@ useFocusEffect(
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         <View style={styles.photoContainer}>
-          {showCamera ? (
-            <CreatePosts onTakePhoto={handleTakePhoto} />
-          ) : (
-            <>
-              {photo && (
-                <Image
-                  source={{ uri: photo }}
-                  style={{ width: "100%", height: "100%", borderRadius: 8 }}
-                />
-              )}
-            </>
-          )}
+        
+          {photo ? (
+    <Image
+      source={{ uri: photo }}
+      style={{ width: "100%", height: "100%", borderRadius: 8 }}
+    />
+  ) : (
+    showCamera && <CreatePosts onTakePhoto={handleTakePhoto} />
+  )}
         </View>
 
         {photo && (
-          <TouchableOpacity onPress={() => setPhoto(null)}>
+          <TouchableOpacity onPress={() => {
+    setPhoto(null);
+    setShowCamera(true);
+  }}>
             <Text style={{ color: "red", marginTop: 8 }}>Видалити фото</Text>
           </TouchableOpacity>
         )}

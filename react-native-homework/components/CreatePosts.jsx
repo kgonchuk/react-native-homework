@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
+// import { requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import { useEffect, useRef, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
@@ -8,13 +8,13 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 export default function CreatePosts({ onTakePhoto }) {
   const [permission, requestPermission] = useCameraPermissions();
-   const [mediaPermission, requestMediaPermission] = MediaLibrary.usePermissions();
+  //  const [mediaPermission] = MediaLibrary.usePermissions();
   const cameraRef = useRef(null);
   const [type, setType] = useState('back');
 
-    useEffect(() => {
-    requestMediaLibraryPermissionsAsync();
-  }, []);
+  //   useEffect(() => {
+  //   requestMediaLibraryPermissionsAsync();
+  // }, []);
 
   if (!permission) return <View />;
 
@@ -33,9 +33,9 @@ export default function CreatePosts({ onTakePhoto }) {
     const photo = await cameraRef.current.takePictureAsync();
 
     // збереження в галерею
-    if (mediaPermission?.granted) {
-      await MediaLibrary.createAssetAsync(photo.uri);
-    }
+    // if (mediaPermission?.granted) {
+    //   await MediaLibrary.createAssetAsync(photo.uri);
+    // }
     onTakePhoto(photo.uri);
   };
 
@@ -45,17 +45,12 @@ export default function CreatePosts({ onTakePhoto }) {
 
   return (
      <CameraView style={styles.camera} ref={cameraRef} facing={type}>
-      
-      {/* Переключити камеру */}
       <TouchableOpacity style={styles.flipBtn} onPress={toggleCamera}>
         <Ionicons name="camera-reverse" size={28} color="#fff" />
       </TouchableOpacity>
-
-      {/* Кнопка фото */}
       <TouchableOpacity style={styles.captureBtn} onPress={takePhoto}>
         <Ionicons name="camera" size={24} color="#fff" />
       </TouchableOpacity>
-
     </CameraView>
   );
 }

@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router, Stack, Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
 
 export default function TabsLayout() {
@@ -14,7 +14,7 @@ export default function TabsLayout() {
         sceneStyle: { backgroundColor: "#fff" },
       }}
     >
-      {/* POSTS */}
+
       <Tabs.Screen
         name="posts"
         options={{
@@ -74,8 +74,6 @@ export default function TabsLayout() {
           headerShown: false,
         }}
       />
- 
-    
     </Tabs>
 
     

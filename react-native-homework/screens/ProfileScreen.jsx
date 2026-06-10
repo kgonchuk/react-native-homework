@@ -20,7 +20,6 @@ import { PostItem } from "@/components/PostItem";
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts.items);
   const user = useSelector((state) => state.auth.user);
   const [avatar, setAvatar] = useState(null);
   const baseUrl = "http://192.168.0.135:3000/";
@@ -56,8 +55,6 @@ export default function ProfileScreen() {
 
 const myPosts = useSelector((state) => selectPostsByAuthor(state, user._id || user.id));
 
-
-
   return (
 
     <View style={styles.container}>
@@ -90,32 +87,13 @@ const myPosts = useSelector((state) => selectPostsByAuthor(state, user._id || us
     </View>
         }
         renderItem={({ item }) => {
-          const imageUrl = item.image ? `http://192.168.0.135:3000${item.image.startsWith('/') ? item.image : '/' + item.image}` : null;
           return (
 
             <View style={styles.postContainer}>
              <PostItem post={item} />
 
              </View>
-            // <View style={styles.postsContainer}>
-              
-            //        <Image  source={{ uri: imageUrl }} style={styles.postImage} />
-            //        <Text style={styles.postTitle}>{item.title}</Text>
-            //        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            //          <View style={styles.comment}>
-            //            <Feather name="message-circle" size={24} color="#BDBDBD" />
-            //            <Text style={styles.commentCount}>0</Text>
-            //          </View>
-            //          <View style={styles.like}>
-            //            <Feather name="thumbs-up" size={24} color="#BDBDBD" />
-            //            <Text style={styles.likeCount}>0</Text>
-            //          </View>
-            //          <View style={styles.location}>
-            //            <Feather name="map-pin" size={24} color="#BDBDBD" />
-            //            <Text style={styles.locationName}>Україна</Text>
-            //          </View>
-            //        </View>
-            //      </View>
+        
           );
         }}
       />

@@ -1,12 +1,10 @@
 
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { Provider, useSelector } from "react-redux";
 import { useFonts } from "expo-font";
-import { Text, TouchableOpacity } from "react-native";
+import { Text} from "react-native";
 import { persistor, RootState, store } from "../redux/store";
 import { PersistGate } from "redux-persist/integration/react";
-import { Feather } from "@expo/vector-icons";
-
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -61,8 +59,6 @@ function RootLayoutContent() {
       ) : (
         <Stack.Screen name="(auth)" />
       )}
-
-      
     </Stack>
   );
 }

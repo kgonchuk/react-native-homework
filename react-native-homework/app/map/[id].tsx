@@ -1,62 +1,16 @@
-// import { router, useLocalSearchParams } from "expo-router";
-// import { View, StyleSheet, ActivityIndicator, TouchableOpacity, Text } from "react-native";
-// import { WebView } from "react-native-webview";
-
-// export default function MapScreen() {
-//   const { latitude, longitude } = useLocalSearchParams();
-//   const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-
-//   return (
-//     <View style={styles.container}>
-//         <TouchableOpacity 
-//         style={styles.backButton} 
-//         onPress={() => router.back()}
-//       >
-//         <Text style={styles.backText}>← Назад</Text>
-//       </TouchableOpacity>
-//       <WebView 
-//         source={{ uri: url }} 
-//         startInLoadingState={true}
-//         renderLoading={() => <ActivityIndicator style={styles.loader} />}
-//       />
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//   },
-//   loader: {
-//     position: 'absolute',
-//     top: '50%',
-//     left: '50%',
-//   },
-//   backButton: {
-//     position: 'absolute',
-//     top: 50,
-//     left: 20,
-//     zIndex: 10, 
-//     backgroundColor: 'rgba(255, 255, 255, 0.8)',
-//     padding: 10,
-//     borderRadius: 8,
-//   },
-//   backText: { fontSize: 16, fontWeight: 'bold' }
-// });
 
 import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
-  Text,
+  Alert,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { Feather } from "@expo/vector-icons";
 
 import * as Location from "expo-location";
-import { router, useLocalSearchParams, useRouter } from "expo-router";
+import {useLocalSearchParams, useRouter } from "expo-router";
 
 export default function MapScreen() {
     const router = useRouter();
@@ -74,7 +28,7 @@ export default function MapScreen() {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.log("Permission to access location was denied");
+Alert.alert("Permission to access location was denied")
       }
 
       let location = await Location.getCurrentPositionAsync({});
@@ -87,35 +41,10 @@ export default function MapScreen() {
   }, []);
 
   return (
-    // <View style={styles.container}>
-    //   <View style={styles.arrowLeft}>
-    //     <TouchableOpacity
-    //       style={styles.input}
-    //       onPress={() => router.back()}
-    //     >
-    //       <Text style={[styles.inputText, { paddingLeft: 25 }]}>
-    //         Локація поста
-    //       </Text>
-    //       <Feather name="arrow-left" size="24" style={styles.locationIcon} />
-    //     </TouchableOpacity>
-    //   </View>
-    //  <MapView
-    //     style={styles.mapStyle}
-    //     region={{
-    //       ...postLocation,
-    //       latitudeDelta: 0.0922,
-    //       longitudeDelta: 0.0421,
-    //     }}
-    //   >
-    //     {location && (
-    //       <Marker title="I am here" coordinate={location} description="Hello" />
-    //     )}
-    //   </MapView>
-    // </View>
     <View style={styles.container}>
       <TouchableOpacity 
         style={styles.backButton} 
-        onPress={() => router.back()} // Тепер повертає точно назад
+        onPress={() => router.back()} 
       >
         <Feather name="arrow-left" size={24} color="black" />
       </TouchableOpacity>
@@ -140,7 +69,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     justifyContent: "center",
     display: "flex",
-    // alignItems: "center",
   },
   mapStyle: {
     width: "100%",

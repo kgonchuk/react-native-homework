@@ -13,7 +13,7 @@ export default function PostsScreen() {
   const avatarUrl = user.avatar ? `${baseUrl}${user.avatar}` : null;
   const token = useSelector((state) => state.auth.accessToken);
   const allPosts = useSelector(selectAllPosts)
-const flatListRef = useRef(null);
+
 
   
   useEffect(() => {

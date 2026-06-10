@@ -18,7 +18,6 @@ myPosts: [],
         })
         .addCase(fetchPosts.fulfilled, (state, action) => {
             state.isLoading = false;
-            console.log("ДАНІ В REDUCER:", action.payload);
           state.items = [...action.payload];
         })
         .addCase(fetchPosts.rejected, (state, action) => {

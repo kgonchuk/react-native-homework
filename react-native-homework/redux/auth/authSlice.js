@@ -72,7 +72,7 @@ const authSlice = createSlice({
         state.isRefreshing = false;
       })
       .addCase(updateAvatar.fulfilled, (state, action) => {
-        state.user.avatar = action.payload; // Оновлюємо шлях до аватара в Redux
+        state.user.avatar = action.payload; 
       });
   },
 });

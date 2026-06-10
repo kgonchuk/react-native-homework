@@ -37,7 +37,6 @@ export default function RegistrationScreen() {
         router.push("/posts");
       })
       .catch((error) => {
-        console.log("Отримана помилка від сервера:", error);
         Alert.alert(
           "Помилка",
           typeof error === "string" ? error : "Щось пішло не так",

@@ -30,9 +30,7 @@ export const createPost = createAsyncThunk(
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to create post");
       }
-      const data = await response.json();
-      
-      console.log("ВІДПОВІДЬ СЕРВЕРА:", data); 
+      const data = await response.json(); 
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -61,7 +59,6 @@ export const fetchPosts = createAsyncThunk(
 
       return JSON.parse(responseText);
     } catch (error) {
-      console.log("Помилка:", error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -86,7 +83,6 @@ export const fetchAllPosts = createAsyncThunk(
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log("Помилка:", error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -97,9 +93,6 @@ export const addComment = createAsyncThunk(
   async ({ postId, commentText, userId }, { getState, rejectWithValue }) => {
     try {
     const token = getState().auth.accessToken; 
-      
-      console.log("TOKEN BEING SENT:", token);
-console.log("TOKEN BEING SENT:", token);
       const response = await fetch(`http://192.168.0.135:3000/api/posts/${postId}/comments`, {
         method: "POST",
         headers: {
@@ -112,7 +105,6 @@ console.log("TOKEN BEING SENT:", token);
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.log("ПОМИЛКА ВІД СЕРВЕРА:", errorData); 
         throw new Error(errorData.message || "Не вдалося додати коментар");
       }
 

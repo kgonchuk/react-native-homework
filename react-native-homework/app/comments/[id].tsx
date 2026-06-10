@@ -5,7 +5,6 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList, KeyboardAvoi
 import { useDispatch, useSelector } from "react-redux";
 import ComponentInput from "../../components/Comments/ComponentInput";
 import { addComment } from "../../redux/posts/postOperation";
-import { useState } from "react";
 import DefaultAvatarIcon from '../../assets/IconSend.svg';
 
 
@@ -17,11 +16,7 @@ const { id } = useLocalSearchParams();
  const baseUrl = "http://192.168.0.135:3000/";
 const posts = useSelector((state: any) => state.posts.items);
 const post = posts.find((p) => p._id === id);
-
 const userId = useSelector((state: any) => state.auth.id || state.auth.user?.id || state.auth.user?._id);
-
-    const user = useSelector((state) => state.auth.user);
-
 const imageUrl = post?.image
     ? `${baseUrl.replace(/\/$/, "")}/${post.image.replace(/^\//, "")}`
     : null;
@@ -29,16 +24,11 @@ const imageUrl = post?.image
 // @ts-ignore
 const handleSend = (text) => {
     if (!userId) {
-     console.log("ПОМИЛКА: userId не знайдено в Redux!");
      return; 
    }
    dispatch(addComment({ postId: id, commentText: text, userId }));
    Keyboard.dismiss();
   };
-
-
-
-
   return (
 <KeyboardAvoidingView 
   style={{ flex: 1 }} 
@@ -120,9 +110,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
  flatContainer: {
-    flexDirection: "row", // Аватарка і текст поруч
+    flexDirection: "row", 
     marginBottom: 24,
-    gap: 16, // Відступ між аватаркою і текстом
+    gap: 16,
   },
   myComment: {
     flexDirection: "row-reverse", 
@@ -140,10 +130,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6" 
   },
   commentWrapper: {
-    flex: 1, // Текст займає весь вільний простір
+    flex: 1, 
     padding: 16,
     borderRadius: 6,
-    backgroundColor: "rgba(0, 0, 0, 0.03)", // Світло-сірий фон як у Figma
+    backgroundColor: "rgba(0, 0, 0, 0.03)", 
   },
   commentText: {
     fontSize: 13,
@@ -157,12 +147,12 @@ const styles = StyleSheet.create({
  commentDate: {
     fontSize: 10,
     color: "#BDBDBD",
-    textAlign: "right", // Дата справа знизу
+    textAlign: "right", 
   },
    postImage: {
     width: "100%",
     height: 240,
     borderRadius: 8,
-    marginBottom: 32, // Більший відступ після картинки
+    marginBottom: 32, 
   },
 });

@@ -17,7 +17,6 @@ import BgImage from "../assets/images/BG.png";
 export default function RegistrationScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -32,7 +31,6 @@ export default function RegistrationScreen() {
         router.push("/posts");
       })
       .catch((error) => {
-        console.log("Отримана помилка від сервера:", error);
         alert(typeof error === "string" ? error : "Щось пішло не так");
       });
   };

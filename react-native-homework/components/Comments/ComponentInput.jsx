@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {StyleSheet,TextInput, TouchableOpacity, View } from "react-native";
 import {SendIcon} from "../SendIcon"
 
 export default function ComponentInput({  onSend }) {

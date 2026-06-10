@@ -44,7 +44,6 @@ export const register = createAsyncThunk(
       setAuthHeader(data.accessToken);
       return data;
     } catch (error) {
-      console.log("Помилка реєстрації:", error.response?.data || error.message);
       return rejectWithValue(
         error.response?.data?.message || "Registration failed",
       );
@@ -110,7 +109,6 @@ export const refreshUser = createAsyncThunk(
       const response = await axios.get("/api/auth/refresh");
       return response.data;
     } catch (error) {
-      console.log("Помилка сервера:", error.response?.data || error.message);
       return rejectWithValue(
         error.response?.data?.message || "Failed to refresh user",
       );
