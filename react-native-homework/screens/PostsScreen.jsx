@@ -1,6 +1,6 @@
 import { fetchPosts } from "@/redux/posts/postOperation";
 import { Feather } from "@expo/vector-icons";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { PostItem } from "../components/PostItem";
@@ -13,7 +13,7 @@ export default function PostsScreen() {
   const avatarUrl = user.avatar ? `${baseUrl}${user.avatar}` : null;
   const token = useSelector((state) => state.auth.accessToken);
   const allPosts = useSelector(selectAllPosts)
-
+const flatListRef = useRef(null);
 
   
   useEffect(() => {

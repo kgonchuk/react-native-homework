@@ -37,24 +37,32 @@ function RootLayoutContent() {
       {isLoggedIn ? (
         <>
           <Stack.Screen name="(tabs)" />
-          {/* Назва має збігатися з назвою файлу в папці app */}
           <Stack.Screen 
             name="comments/[id]" 
             options={{ 
-              headerShown: true, // ВАЖЛИВО: це примусово вмикає шапку
+              headerShown: true, 
               title: "Коментарі",
               headerTitleAlign: "center",
               headerStyle: { backgroundColor: '#fff' },
               headerTitleStyle: { fontSize: 17, fontWeight: "500" },
-              // headerBackTitleVisible: false,
-              headerTintColor: "#000", // Чорний колір тексту/кнопки назад
-              // headerTitleStyle: { color: "#000", fontSize: 17, fontWeight: "500" },
+              headerTintColor: "#000", 
+            }} 
+          />
+          <Stack.Screen 
+            name="map/[id]" 
+            options={{ 
+              headerShown: true, 
+              title: "Локація",
+              headerTitleAlign: "center",
+              headerTintColor: "#000", 
             }} 
           />
         </>
       ) : (
         <Stack.Screen name="(auth)" />
       )}
+
+      
     </Stack>
   );
 }

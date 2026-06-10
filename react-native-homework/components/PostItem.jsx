@@ -29,6 +29,7 @@ const handleLike = () => {
       </Text>
       <View style={styles.infowrapper}>
         <Text style={styles.postTitle}>{post.title}</Text>
+        
         <View >
             <TouchableOpacity   onPress={() => router.push(`/comments/${post._id}`)} style={styles.comment} >
               <Feather name="message-circle" size={24} color="#BDBDBD" />
@@ -43,12 +44,21 @@ const handleLike = () => {
             </TouchableOpacity>
          </View>
                      
-            <View style={styles.locationWrapper}>
+            <TouchableOpacity style={styles.locationWrapper} 
+    onPress={() => router.push({
+    pathname: '/map/[postId]',
+    params: { 
+      id: post.location.id,
+      latitude: post.location.latitude, 
+      longitude: post.location.longitude,
+      title: post.location.name 
+    }
+  })}>
             <Feather name="map-pin" size={24} color="#BDBDBD" />
            <Text style={styles.locationName}>
   {post.location?.name || "Невідома локація"}
 </Text>
-            </View>
+            </TouchableOpacity>
 
                    </View>
                  </View>

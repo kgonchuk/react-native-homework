@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   addplus: {
     position: "absolute",
-    top: 81,
+    top: -30,
     left: 107,
   },
   title: {

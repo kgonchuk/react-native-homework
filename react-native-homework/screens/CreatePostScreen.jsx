@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -17,7 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux"; // <-- ЦЕ ОБОВ'ЯЗКОВО
 import CreatePosts from "../components/CreatePosts";
 import { createPost } from "../redux/posts/postOperation";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 export default function CreatePostScreen() {
   const token = useSelector((state) => state.auth.accessToken);
@@ -33,36 +33,105 @@ export default function CreatePostScreen() {
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
 
-  // const isFormValid =
-  //   name.trim() !== "" && place.trim() !== "" && photo !== null;
-
   useEffect(() => {
     setShowCamera(true);
   }, []);
 
-  const getLocation = async () => {
-    // запит дозволу
-    const { status } = await Location.requestForegroundPermissionsAsync();
+  // const getLocation = async () => {
+  //   const { status } = await Location.requestForegroundPermissionsAsync();
+  //   if (status !== "granted") {
+  //     alert("Немає доступу до геолокації");
+  //     return;
+  //   }
+  //   const loc = await Location.getCurrentPositionAsync({});
 
-    if (status !== "granted") {
-      alert("Немає доступу до геолокації");
-      return;
+  //   if (location && location.coords) {
+  //     return {
+  //       latitude: location.coords.latitude,
+  //       longitude: location.coords.longitude,
+  //     };
+  //   }
+  //   setLocation(loc.coords);
+  //   const addr = await Location.reverseGeocodeAsync(loc.coords);
+  //   if (addr.length > 0) {
+  //     const placeName = `${addr[0].city || ""}, ${addr[0].country || ""}`;
+  //     setAddress(placeName);
+  //     setPlace(placeName); 
+  //   }
+  //    return {
+  //   latitude: location.coords.latitude,
+  //   longitude: location.coords.longitude,
+  // };
+  // };
+   
+// const getLocation = async (placeName) => {
+//   try {
+//     // 1. Якщо користувач ввів назву міста
+//     if (placeName && placeName.trim() !== "") {
+//       const geoResult = await Location.geocodeAsync(placeName);
+      
+//       if (geoResult.length > 0) {
+//         return {
+//           latitude: geoResult[0].latitude,
+//           longitude: geoResult[0].longitude,
+//         };
+//       } else {
+//         // Якщо місто не знайдено, можна видати алерт або повернути 0,0
+//         console.log("Місто не знайдено, використовуємо GPS");
+//       }
+//     }
+
+//     // 2. Якщо користувач нічого не ввів або місто не знайшлось -> GPS
+//     let { status } = await Location.requestForegroundPermissionsAsync();
+//     if (status !== "granted") return { latitude: 0, longitude: 0 };
+
+//     const location = await Location.getCurrentPositionAsync({});
+//     return {
+//       latitude: location.coords.latitude,
+//       longitude: location.coords.longitude,
+//     };
+//   } catch (error) {
+//     console.error("Помилка отримання локації:", error);
+//     return { latitude: 0, longitude: 0 };
+//   }
+// };
+
+
+const getLocation = async (placeName) => {
+  try {
+    // 1. Якщо користувач ВЖЕ ввів назву (ручний ввід)
+    if (placeName && placeName.trim() !== "") {
+      const geoResult = await Location.geocodeAsync(placeName);
+      if (geoResult.length > 0) {
+        return {
+          latitude: geoResult[0].latitude,
+          longitude: geoResult[0].longitude,
+        };
+      }
     }
 
-    // отримання координат
-    const loc = await Location.getCurrentPositionAsync({});
-    setLocation(loc.coords);
+    // 2. Якщо це GPS (автоматичний режим)
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") return { latitude: 0, longitude: 0 };
 
-    // 🌍 отримання адреси (reverse geocoding)
-    const addr = await Location.reverseGeocodeAsync(loc.coords);
-
+    const location = await Location.getCurrentPositionAsync({});
+    
+    // ДОДАЄМО: Зворотне геокодування, щоб отримати назву міста
+    const addr = await Location.reverseGeocodeAsync(location.coords);
     if (addr.length > 0) {
-      const placeName = `${addr[0].city || ""}, ${addr[0].country || ""}`;
-      setAddress(placeName);
-      setPlace(placeName); // підставляємо в input
+      const newPlaceName = `${addr[0].city || ""}, ${addr[0].country || ""}`;
+      setPlace(newPlaceName); // Оновлюємо стан інпуту
     }
-  };
 
+    return {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    };
+  } catch (error) {
+    console.error("Помилка:", error);
+    return { latitude: 0, longitude: 0 };
+  }
+};
   const handleTakePhoto = (uri) => {
     setPhoto(uri);
     setShowCamera(false);
@@ -98,12 +167,13 @@ export default function CreatePostScreen() {
       Alert.alert("Помилка", "Додайте фото!");
       return;
     }
-
+   
+const coords = await getLocation(place);
     const postData = {
       title,
-      place,
-      latitude: latitude || 0,
-      longitude: longitude || 0,
+    place: place || "Невідома локація",
+    latitude: coords.latitude,
+    longitude: coords.longitude,
       photo,
       token,
     };
@@ -113,6 +183,17 @@ export default function CreatePostScreen() {
       handleClearForm();
       router.push("/posts");
   };
+
+useFocusEffect(
+  useCallback(() => {
+    setShowCamera(true);
+    setPhoto(null); 
+    setTitle("");
+    setPlace("");
+    return () => {
+    };
+  }, [])
+);
 
   const handleClearForm = () => {
     setName("");
@@ -161,7 +242,7 @@ export default function CreatePostScreen() {
 
           {/* Локація */}
           <View style={styles.locationWrap}>
-            <Pressable onPress={getLocation}>
+            <Pressable onPress={() => getLocation(place)}>
               <Feather name="map-pin" size={20} color="#BDBDBD" />
             </Pressable>
             <TextInput

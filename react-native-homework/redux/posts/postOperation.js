@@ -13,14 +13,10 @@ export const createPost = createAsyncThunk(
 
       formData.append("title", postData.title);
       formData.append("place", postData.place || "");
+      formData.append("name",  postData.place);
       formData.append("latitude", postData.latitude?.toString() || ""); 
       formData.append("longitude", postData.longitude?.toString() || ""); 
 
-      console.log("ПЕРЕВІРКА ФОРМИ:", formData);
-      console.log("FormData entries:", formData._parts);
-      console.log("Відправляю на сервер:", {
-        title: postData.title,
-      });
 
       const response = await fetch("http://192.168.0.135:3000/api/posts", {
         method: "POST",
