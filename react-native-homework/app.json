@@ -1,8 +1,9 @@
 {
   "expo": {
    "name": "PinPointMe", 
-    "slug": "pinpoint-me",
+   "slug": "react-native-homework",
     "version": "1.0.0",
+    "platforms": ["ios", "android"],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "reactnativehomework",
