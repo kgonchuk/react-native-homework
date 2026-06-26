@@ -1,6 +1,5 @@
 import { fetchPosts } from "@/redux/posts/postOperation";
-import { Feather } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
+import { useEffect} from "react";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { PostItem } from "../components/PostItem";
@@ -9,7 +8,7 @@ import { selectAllPosts } from "@/redux/posts/postSelector";
 export default function PostsScreen() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const baseUrl = "http://192.168.0.135:3000/";
+  const baseUrl = "https://react-native-homework-backend.onrender.com/";
   const avatarUrl = user.avatar ? `${baseUrl}${user.avatar}` : null;
   const token = useSelector((state) => state.auth.accessToken);
   const allPosts = useSelector(selectAllPosts)

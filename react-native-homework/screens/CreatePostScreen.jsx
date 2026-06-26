@@ -177,7 +177,7 @@ useFocusEffect(
             style={styles.input}
           />
 
-          {/* Локація */}
+       
           <View style={styles.locationWrap}>
             <Pressable onPress={() => getLocation(place)}>
               <Feather name="map-pin" size={20} color="#BDBDBD" />

@@ -13,8 +13,8 @@ export const clearAuthHeader = () => {
   return {};
 };
 
-// axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-axios.defaults.baseURL = "http://192.168.0.131:3000";
+axios.defaults.baseURL = process.env.EXPO_PUBLIC_BASE_URL;
+
 export const register = createAsyncThunk(
   "auth/register",
   async (credentials, { rejectWithValue }) => {
@@ -62,7 +62,6 @@ export const login = createAsyncThunk(
 
       setAuthHeader(accessToken);
       await saveToken(accessToken);
-      //   toast.success(`Welcome ${user.username}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -73,7 +72,6 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
     const token = thunkAPI.getState().auth?.accessToken;
-    //  Якщо токена немає, ми не можемо надіслати запит на вихід.
     if (!token) {
       clearAuthHeader();
       await removeToken("accessToken");
@@ -116,6 +114,7 @@ export const refreshUser = createAsyncThunk(
     }
   },
 );
+
 // оновлення аватара
 
 export const updateAvatar = createAsyncThunk(

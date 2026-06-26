@@ -13,7 +13,7 @@ export default function CommentsScreen() {
 
 const dispatch=useDispatch();
 const { id } = useLocalSearchParams();
- const baseUrl = "http://192.168.0.135:3000/";
+ const baseUrl = "https://react-native-homework-backend.onrender.com/";
 const posts = useSelector((state: any) => state.posts.items);
 const post = posts.find((p) => p._id === id);
 const userId = useSelector((state: any) => state.auth.id || state.auth.user?.id || state.auth.user?._id);
@@ -71,7 +71,7 @@ data={post?.comments ? post.comments.filter(c => c !== undefined && c !== null) 
 {avatarUri ? (
   <Image source={
     item.author?.avatar 
-      ? { uri: `http://192.168.0.135:3000/${item.author.avatar}` } 
+      ? { uri: `https://react-native-homework-backend.onrender.com/${item.author.avatar}` } 
       : require('../../assets/IconSend.svg')
   }style={styles.userPhoto} />
 ) : (

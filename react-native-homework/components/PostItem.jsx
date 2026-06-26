@@ -7,7 +7,7 @@ import { toggleLikeThunk } from "@/redux/posts/postOperation";
 export const PostItem = ({ post }) => {
 const dispatch=useDispatch();
 const userId = useSelector((state) => state.auth.id || state.auth.user?.id || state.auth.user?._id);
-const baseUrl = "http://192.168.0.135:3000";
+const baseUrl = "https://react-native-homework-backend.onrender.com";
 const likes = post.likes || [];
 
 const handleLike = () => {

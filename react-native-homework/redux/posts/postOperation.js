@@ -1,5 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+
+const BASE_URL = "https://react-native-homework-backend.onrender.com"; 
+
 export const createPost = createAsyncThunk(
   "posts/createPost",
   async (postData, { rejectWithValue }) => {
@@ -13,12 +16,11 @@ export const createPost = createAsyncThunk(
 
       formData.append("title", postData.title);
       formData.append("place", postData.place || "");
-      formData.append("name",  postData.place);
+      formData.append("name",  postData.place);
       formData.append("latitude", postData.latitude?.toString() || ""); 
       formData.append("longitude", postData.longitude?.toString() || ""); 
 
-
-      const response = await fetch("http://192.168.0.131:3000/api/posts", {
+      const response = await fetch(`${BASE_URL}/api/posts`, {
         method: "POST",
         body: formData,
         headers: {
@@ -43,7 +45,7 @@ export const fetchPosts = createAsyncThunk(
  "posts/fetchPosts",
   async (token, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://192.168.0.131:3000/api/posts", {
+      const response = await fetch(`${BASE_URL}/api/posts`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -68,7 +70,7 @@ export const fetchAllPosts = createAsyncThunk(
   "posts/fetchAllPosts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://192.168.0.131:3000/api/posts", {
+      const response = await fetch(`${BASE_URL}/api/posts`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -92,14 +94,14 @@ export const addComment = createAsyncThunk(
   "posts/addComment",
   async ({ postId, commentText, userId }, { getState, rejectWithValue }) => {
     try {
-    const token = getState().auth.accessToken; 
-      const response = await fetch(`http://192.168.0.131:3000/api/posts/${postId}/comments`, {
+      const token = getState().auth.accessToken; 
+      const response = await fetch(`${BASE_URL}/api/posts/${postId}/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-      body: JSON.stringify({ text: commentText }),
+        body: JSON.stringify({ text: commentText }),
       });
 
 
@@ -115,23 +117,22 @@ export const addComment = createAsyncThunk(
   }
 );
 
-export const toggleLikeThunk=createAsyncThunk(
-  "posts/toggleLike", async ({postId}, {rejectWithValue, getState})=>{
-    try{
-      const token= getState().auth.accessToken;
-      const response = await fetch(`http://192.168.0.131:3000/api/posts/${postId}/toggleLike`, {
-        method:"POST",
-      headers: {
-  "Authorization": `Bearer ${token}`, 
-  "Content-Type": "application/json",
-},
-        
-      })
+export const toggleLikeThunk = createAsyncThunk(
+  "posts/toggleLike", 
+  async ({ postId }, { rejectWithValue, getState }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const response = await fetch(`${BASE_URL}/api/posts/${postId}/toggleLike`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`, 
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) throw new Error("Не вдалося змінити лайк");
       return await response.json();
-    }catch(error)
-    {
-      return rejectWithValue(error.message)
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
   }
-)
+);

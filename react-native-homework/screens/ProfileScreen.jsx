@@ -22,7 +22,7 @@ export default function ProfileScreen() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const [avatar, setAvatar] = useState(null);
-  const baseUrl = "http://192.168.0.135:3000/";
+  const baseUrl = "https://react-native-homework-backend.onrender.com/";
 
 
   const displayAvatar = avatar

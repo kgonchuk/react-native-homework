@@ -1,21 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-// import { requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
-import * as MediaLibrary from 'expo-media-library';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 
 export default function CreatePosts({ onTakePhoto }) {
   const [permission, requestPermission] = useCameraPermissions();
-  //  const [mediaPermission] = MediaLibrary.usePermissions();
   const cameraRef = useRef(null);
   const [type, setType] = useState('back');
-
-  //   useEffect(() => {
-  //   requestMediaLibraryPermissionsAsync();
-  // }, []);
-
   if (!permission) return <View />;
 
   if (!permission.granted) {
@@ -31,11 +23,6 @@ export default function CreatePosts({ onTakePhoto }) {
 
    const takePhoto = async () => {
     const photo = await cameraRef.current.takePictureAsync();
-
-    // збереження в галерею
-    // if (mediaPermission?.granted) {
-    //   await MediaLibrary.createAssetAsync(photo.uri);
-    // }
     onTakePhoto(photo.uri);
   };
 
