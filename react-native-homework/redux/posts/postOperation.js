@@ -18,7 +18,7 @@ export const createPost = createAsyncThunk(
       formData.append("longitude", postData.longitude?.toString() || ""); 
 
 
-      const response = await fetch("http://192.168.0.135:3000/api/posts", {
+      const response = await fetch("http://192.168.0.131:3000/api/posts", {
         method: "POST",
         body: formData,
         headers: {
