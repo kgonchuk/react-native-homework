@@ -43,7 +43,7 @@ export const fetchPosts = createAsyncThunk(
  "posts/fetchPosts",
   async (token, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://192.168.0.135:3000/api/posts", {
+      const response = await fetch("http://192.168.0.131:3000/api/posts", {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -68,7 +68,7 @@ export const fetchAllPosts = createAsyncThunk(
   "posts/fetchAllPosts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://192.168.0.135:3000/api/posts", {
+      const response = await fetch("http://192.168.0.131:3000/api/posts", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export const addComment = createAsyncThunk(
   async ({ postId, commentText, userId }, { getState, rejectWithValue }) => {
     try {
     const token = getState().auth.accessToken; 
-      const response = await fetch(`http://192.168.0.135:3000/api/posts/${postId}/comments`, {
+      const response = await fetch(`http://192.168.0.131:3000/api/posts/${postId}/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,7 +119,7 @@ export const toggleLikeThunk=createAsyncThunk(
   "posts/toggleLike", async ({postId}, {rejectWithValue, getState})=>{
     try{
       const token= getState().auth.accessToken;
-      const response = await fetch(`http://192.168.0.135:3000/api/posts/${postId}/toggleLike`, {
+      const response = await fetch(`http://192.168.0.131:3000/api/posts/${postId}/toggleLike`, {
         method:"POST",
       headers: {
   "Authorization": `Bearer ${token}`, 
