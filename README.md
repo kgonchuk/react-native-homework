@@ -9,7 +9,6 @@
 | Авторизація / Профіль | Стрічка постів | Інтерактивна карта | 
 
 <img width="660" height="1434" alt="IMG_8311" src="https://github.com/user-attachments/assets/4fcd9db0-a466-43bf-9e71-d4c4cc9f5a45" />
-<img width="660" height="1434" alt="IMG_8312" src="https://github.com/user-attachments/assets/60543f36-88c3-4cb8-a661-0e25b0c3199f" />
 <img width="660" height="1434" alt="IMG_8313" src="https://github.com/user-attachments/assets/bf88df26-8673-4b25-a201-81b531caf060" />
 <img width="660" height="1434" alt="IMG_8314" src="https://github.com/user-attachments/assets/d009b04b-3a4f-405d-95bb-091d2e7a0683" />
 <img width="660" height="1434" alt="IMG_8315" src="https://github.com/user-attachments/assets/f5eb5db9-3365-4623-8a5b-d6141b785ffa" />
