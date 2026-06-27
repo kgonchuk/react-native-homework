@@ -14,10 +14,11 @@ const handleLike = () => {
     dispatch(toggleLikeThunk({ postId: post._id }));
   };
 
-  const imageUrl = post.image
-    ? `${baseUrl.replace(/\/$/, "")}/${post.image.replace(/^\//, "")}`
-    : null;
-    
+ const imageUrl = post.image
+  ? post.image.startsWith("http")
+    ? post.image 
+    : `${baseUrl.replace(/\/$/, "")}/${post.image.replace(/^\//, "")}`
+  : null;
   return (
     
     <View style={styles.postsContainer}>

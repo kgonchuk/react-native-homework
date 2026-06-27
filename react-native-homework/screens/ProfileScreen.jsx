@@ -25,11 +25,14 @@ export default function ProfileScreen() {
   const baseUrl = "https://react-native-homework-backend.onrender.com/";
 
 
-  const displayAvatar = avatar
-    ? avatar
-    : user.avatar
-      ? `${baseUrl}${user.avatar}`
-      : null;
+const displayAvatar = avatar
+  ? avatar
+  : user?.avatar
+    ? user.avatar.startsWith("http")
+      ? user.avatar 
+      : `${baseUrl.replace(/\/$/, "")}/${user.avatar.replace(/^\//, "")}`
+    : null;
+
 
   const uploadPhoto = async () => {
     try {
@@ -54,7 +57,6 @@ export default function ProfileScreen() {
   };
 
 const myPosts = useSelector((state) => selectPostsByAuthor(state, user._id || user.id));
-
   return (
 
     <View style={styles.container}>
