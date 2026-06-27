@@ -1,50 +1,49 @@
-# Welcome to your Expo app 👋
+# 📍 PinPointMe — Мобільний додаток для обміну локаціями та фотографіями
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**PinPointMe** — це сучасний Fullstack мобільний додаток на базі React Native (Expo), створений для того, щоб користувачі могли ділитися своїми улюбленими локаціями, додавати фотографії, залишати коментарі, ставити лайки та бачити пости інших на інтерактивній карті.
 
-## Get started
+---
 
-1. Install dependencies
+## 📸 Скріншоти додатку
 
+| Екран авторизації / профілю | Стрічка постів | Карта локації |
+| :---: | :---: | :---: |
+| <img src="[ПОСИЛАННЯ_НА_СКРІНШОТ_АБО_GIF_1]" width="250" /> | <img src="[ПОСИЛАННЯ_НА_СКРІНШОТ_АБО_GIF_2]" width="250" /> | <img src="[ПОСИЛАННЯ_НА_СКРІНШОТ_АБО_GIF_3]" width="250" /> |
+
+*Порада розробнику: Запишіть екран телефону або симулятора, конвертуйте у GIF або завантажте скріншоти прямо в GitHub (можна просто перетягнути картинку в редактор файлу README на сайті GitHub, і він сам згенерує посилання).*
+
+---
+
+## 🛠️ Технологічний стек
+
+### Frontend (Мобільний додаток):
+* **React Native & Expo** (Expo Router для навігації, Expo ImagePicker для камери та галереї)
+* **Redux Toolkit** (Керування глобальним станом додатку, асинхронні Thunk-запити)
+* **React Native Maps** (Інтеграція інтерактивних карт)
+* **Vector Icons & StyleSheet** (Стилізація інтерфейсу)
+
+### Backend (Сервер та База даних):
+* **Node.js & Express** (Архітектура REST API)
+* **MongoDB Atlas & Mongoose** (Зберігання даних користувачів та постів)
+* **Cloudinary & Multer** (Хмарне та надійне збереження зображень)
+* **JWT (JSON Web Tokens) & Bcrypt** (Безпечна авторизація та шифрування паролів)
+* **Render** (Хостинг та деплой серверної частини)
+
+---
+
+## 🚀 Основний функціонал
+
+* 🔐 **Повна автентифікація:** Реєстрація з унікальним аватаром (через Cloudinary), логін, логаут, оновлення токенів (Refresh/Access JWT).
+* 📸 **Створення постів:** Можливість зробити або вибрати фото, додати назву, опис місцевості та геолокацію.
+* 🗺️ **Інтерактивна карта:** Перегляд точного розташування кожного поста за допомогою вбудованих карт.
+* 💬 **Соціальна взаємодія:** Користувачі можуть ставити/прибирати лайки та писати коментарі до постів у реальному часі.
+* 👤 **Профіль користувача:** Персональна сторінка зі списком лише власних публікацій та можливістю змінити аватарку.
+
+---
+
+## 📦 Як запустити проєкт локально
+
+1. **Клонуйте репозиторій:**
    ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+   git clone [ПОСИЛАННЯ_НА_ВАШ_РЕПОЗИТОРІЙ]
+   cd react-native-homework
